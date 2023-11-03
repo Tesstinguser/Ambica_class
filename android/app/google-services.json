@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "755181411455",
+    "project_id": "firabse-unititle",
+    "storage_bucket": "firabse-unititle.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:755181411455:android:34758ac5157b9f71c0734a",
+        "android_client_info": {
+          "package_name": "com.example.untitled1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQGAZt6bftSXMXlnVgA8ydWIz7RJvD4V8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
