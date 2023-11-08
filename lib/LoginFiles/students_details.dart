@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import 'Students_Profiles.dart';
+import 'students_profiles.dart';
 
 class StudentDetilas extends StatefulWidget {
   const StudentDetilas({super.key});
@@ -52,9 +53,14 @@ class _StudentDetilasState extends State<StudentDetilas> {
                           ),
                           InkWell(
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => StudentsProfiles(),));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => StudentsProfiles(),
+                                    ));
                               },
-                              child: Icon(Icons.edit, color: Colors.white, size: 35)),
+                              child: Icon(Icons.edit,
+                                  color: Colors.white, size: 35)),
                         ],
                       ),
                     ],
@@ -121,7 +127,8 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                               Text('dummy ',
                                                   style: TextStyle(
                                                       color: Color(0xff454283),
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       fontSize: 15)),
                                             ],
                                           ),
@@ -148,20 +155,23 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                               Text('5',
                                                   style: TextStyle(
                                                       color: Color(0xff454283),
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       fontSize: 15),
                                                   maxLines: 1),
                                               SizedBox(width: 5),
                                               Text('Year:',
                                                   style: TextStyle(
                                                       color: Color(0xff666565),
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       fontSize: 15)),
                                               SizedBox(width: 5),
                                               Text('2023',
                                                   style: TextStyle(
                                                       color: Color(0xff454283),
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       fontSize: 15),
                                                   maxLines: 1),
                                             ],
@@ -179,7 +189,8 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                               children: [
                                                 Text('maths',
                                                     style: TextStyle(
-                                                        color: Color(0xff454283),
+                                                        color:
+                                                            Color(0xff454283),
                                                         fontWeight:
                                                             FontWeight.bold,
                                                         fontSize: 16)),
@@ -187,14 +198,16 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                                   'maths',
                                                   style: TextStyle(
                                                       color: Color(0xff454283),
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       fontSize: 16),
                                                 ),
                                                 Text(
                                                   'maths',
                                                   style: TextStyle(
                                                       color: Color(0xff454283),
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       fontSize: 16),
                                                 ),
                                               ],
@@ -204,7 +217,8 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                       ),
                                     ),
                                     Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
@@ -230,7 +244,8 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                                     Radius.circular(10)),
                                                 color: Colors.red),
                                             child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
                                               child: Text("Inquirvyy"),
                                             )),
                                         SizedBox(height: 5),
@@ -241,11 +256,14 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                 Row(
                                   children: [
                                     SizedBox(width: 19),
-                                    Icon(
-                                      CupertinoIcons.phone_arrow_down_left,
-                                      size: 23,
-
-
+                                    InkWell(
+                                      onTap: () {
+                                        _makingPhoneCall();
+                                      },
+                                      child: Icon(
+                                        CupertinoIcons.phone_arrow_down_left,
+                                        size: 23,
+                                      ),
                                     ),
                                     SizedBox(width: 5),
                                     Text('917817878653 ',
@@ -279,7 +297,8 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                       maxLines: 1,
                                     )),
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 19,right: 19),
+                                  padding: const EdgeInsets.only(
+                                      left: 19, right: 19),
                                   child: Divider(
                                     color: Colors.black,
                                   ),
@@ -501,7 +520,6 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                     SizedBox(width: 30),
                                     Icon(
                                       CupertinoIcons.phone_arrow_down_left,
-
                                     ),
                                     SizedBox(width: 5),
                                     Text('917817878653 ',
@@ -542,7 +560,6 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                   ),
                                 ),
                                 SizedBox(width: 17),
-
                                 Padding(
                                   padding: const EdgeInsets.only(left: 50),
                                   child: Text(
@@ -596,5 +613,14 @@ class _StudentDetilasState extends State<StudentDetilas> {
         )),
       ),
     );
+  }
+
+  _makingPhoneCall() async {
+    var url = Uri.parse("tel:9776765434");
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
+import '../LoginFiles/otp_verification.dart';
 import 'OtpScreen.dart';
 import 'home_page.dart';
 
@@ -17,13 +18,10 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   TextEditingController userController = TextEditingController();
-
   TextEditingController codeController = TextEditingController();
   String verifId = '';
   bool isSent = false;
   String? phoneNumber;
-
-
 
   void _signInWithPhone(BuildContext context) async {
     if (phoneNumber != null && phoneNumber!.isNotEmpty) {
@@ -65,17 +63,17 @@ class _LoginPageState extends State<LoginPage> {
       body: SafeArea(
         child: Column(
           children: [
-            IntlPhoneField(
-              controller: userController,
-              decoration: InputDecoration(
-                labelText: 'Phone Number',
-
-              ),
-              initialCountryCode: 'IN',
-              onChanged: (phone) {
-                phoneNumber = phone.completeNumber;
-              },
-            ),
+            // IntlPhoneField(
+            //   controller: userController,
+            //   decoration: InputDecoration(
+            //     labelText: 'Phone Number',
+            //
+            //   ),
+            //   initialCountryCode: 'IN',
+            //   onChanged: (phone) {
+            //     phoneNumber = phone.completeNumber;
+            //   },
+            // ),
             // IntlPhoneField(
             //   controller: userController,
             //   decoration: InputDecoration(
@@ -166,15 +164,11 @@ class _LoginPageState extends State<LoginPage> {
             ElevatedButton(
               onPressed: () {
                 _signInWithPhone(context);
-                  // isSent
-                  //     ? verifyUser()
-                  //     : registerUser(userController.text, context);
-                  //
+                  isSent
+                      ? verifyUser()
+                      : registerUser(userController.text, context);
 
-
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => OtpScreen((userController.text),)));
-
-
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => OTPverification((userController.text),)));
               },
               child: Text(isSent ? 'Verify' : 'Send OTP'),
               // child: Text('Send otp'),
@@ -224,8 +218,8 @@ class _LoginPageState extends State<LoginPage> {
           // Auto-resolution timed out...
         });
     print("MOBILESS++>>$mobile");
+    print("MOBILESS++>>$verifId");
   }
-
   verifyUser() async {
     FirebaseAuth _auth = FirebaseAuth.instance;
     // Update the UI - wait for the user to enter the SMS code
@@ -245,6 +239,7 @@ class _LoginPageState extends State<LoginPage> {
     }).catchError((e) {
       log('from verifyUser error');
       print(e);
+      print("MOBILESS++>>$verifId");
     });
     ;
   }

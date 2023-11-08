@@ -1,13 +1,11 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'add_student.dart';
 import 'Edit_Profile.dart';
-import 'Students_Profiles.dart';
-import 'StudentS_details.dart';
+import 'students_profiles.dart';
+import 'students_details.dart';
 
 class Student_Listing extends StatefulWidget {
   const Student_Listing({super.key});
@@ -102,7 +100,6 @@ class _RespactedloginState extends State<Student_Listing> {
                                 backgroundColor: Colors.green,
                                 icon: Icons.call,
                                 label: 'Call',
-
                               ),
                             ],
                           ),

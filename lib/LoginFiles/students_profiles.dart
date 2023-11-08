@@ -49,9 +49,14 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                         ),
                         InkWell(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfile(),));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EditProfile(),
+                                  ));
                             },
-                            child: Icon(Icons.edit, color: Colors.white, size: 35)),
+                            child: Icon(Icons.edit,
+                                color: Colors.white, size: 35)),
                       ],
                     ),
                   ],
@@ -104,10 +109,15 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                                       Container(
                                           margin: EdgeInsets.only(
                                               left: 30, right: 10),
-
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
-                                            child: Text("Ralph Edwards",style: TextStyle(color: Colors.black,fontSize: 17,fontWeight: FontWeight.bold),),
+                                            child: Text(
+                                              "Ralph Edwards",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                           )),
                                       SizedBox(height: 5),
                                     ],
@@ -143,7 +153,8 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                               ),
                               SizedBox(width: 17),
                               Padding(
-                                padding: const EdgeInsets.only(left: 23,right: 23),
+                                padding:
+                                    const EdgeInsets.only(left: 23, right: 23),
                                 child: Divider(
                                   color: Colors.black,
                                 ),
@@ -164,7 +175,8 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                               SizedBox(width: 17),
                               Padding(
                                 padding: const EdgeInsets.only(left: 50),
-                                child: Text("Street line 1, ",
+                                child: Text(
+                                  "Street line 1, ",
                                   style: TextStyle(
                                     color: Color(0xff666565),
                                     fontWeight: FontWeight.bold,
@@ -174,7 +186,8 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 50),
-                                child: Text("Street line 2",
+                                child: Text(
+                                  "Street line 2",
                                   style: TextStyle(
                                     color: Color(0xff666565),
                                     fontWeight: FontWeight.bold,
@@ -184,7 +197,8 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 50),
-                                child: Text("Street line 3,:",
+                                child: Text(
+                                  "Street line 3,:",
                                   style: TextStyle(
                                     color: Color(0xff666565),
                                     fontWeight: FontWeight.bold,
@@ -195,7 +209,9 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                               SizedBox(
                                 height: 370,
                               ),
-                                  Divider(color: Colors.black,),
+                              Divider(
+                                color: Colors.black,
+                              ),
                               SizedBox(
                                 height: 5,
                               ),

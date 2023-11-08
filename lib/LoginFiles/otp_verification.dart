@@ -6,10 +6,10 @@ import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
 
-import 'Student_Listing.dart';
+import 'student_listing.dart';
 
 class OTPverification extends StatefulWidget {
-  const OTPverification({super.key});
+  const OTPverification(String text, {super.key});
 
   @override
   State<OTPverification> createState() => _TTPverificationState();
@@ -46,6 +46,7 @@ class _TTPverificationState extends State<OTPverification> {
   }
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Login'),
         centerTitle: true,
@@ -57,8 +58,7 @@ class _TTPverificationState extends State<OTPverification> {
 
           Container(margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.1),
             child: Align(alignment: Alignment.center,
-              child: Text("OTP Verification",
-                  style: TextStyle(color: Color(0xff182035),fontSize: 25,fontWeight: FontWeight.bold)
+              child: Text("OTP Verification",style: TextStyle(color: Color(0xff182035),fontSize: 25,fontWeight: FontWeight.bold)
 
               ),
             ),
@@ -85,23 +85,20 @@ class _TTPverificationState extends State<OTPverification> {
           Container(
             margin: EdgeInsets.only(top: 17),
             child: Align(
-
               alignment: Alignment.center,
-              child: Expanded(
-                child: OtpTextField(
-                  numberOfFields: 6,
-                  borderColor: Color(0xFF454283),
-                  //set to true to show as box or false to show as dash
-                  showFieldAsBox: true,
-                  //runs when a code is typed in
-                  onCodeChanged: (String code) {
-                    //handle validation or checks here
-                  },
-                  //runs when every textfield is filled
-                  onSubmit: (String verificationCode) {
+              child: OtpTextField(
+                numberOfFields: 6,
+                borderColor: Color(0xFF454283),
+                //set to true to show as box or false to show as dash
+                showFieldAsBox: true,
+                //runs when a code is typed in
+                onCodeChanged: (String code) {
+                  //handle validation or checks here
+                },
+                //runs when every textfield is filled
+                onSubmit: (String verificationCode) {
 
-                  }, // end onSubmit
-                ),
+                }, // end onSubmit
               ),
             ),
           ),
@@ -115,7 +112,6 @@ class _TTPverificationState extends State<OTPverification> {
             ],
           ),
           Align(
-
             child: Container(
               height: MediaQuery.of(context).size.height*0.06,
               width: double.infinity,
@@ -123,6 +119,7 @@ class _TTPverificationState extends State<OTPverification> {
               child: ElevatedButton(
                   style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color(0xff555288))),
                   onPressed: () {
+
                     Navigator.push(context, MaterialPageRoute(builder: (context) => Student_Listing(),));
                   }, child: Text("Submit")),
             ),
