@@ -49,11 +49,13 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                         ),
                         InkWell(
                             onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => EditProfile(),
-                                  ));
+                              // for (var i = 0; i < storedocs.length; i++)
+                              //   Navigator.push(context,MaterialPageRoute(builder: (context) => EditProfile(id: storedocs[i]['id'])));
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (context) => EditProfile(),
+                              //     ));
                             },
                             child: Icon(Icons.edit,
                                 color: Colors.white, size: 35)),

@@ -6,7 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled1/LoginFiles/otp_verification.dart';
+import 'package:untitled1/LoginFiles/student_listing.dart';
 import '../Unusalbefile/OtpScreen.dart';
 import '../Unusalbefile/home_page.dart';
 
@@ -76,20 +78,26 @@ class _imagetestingState extends State<LoginScreen> {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('org').where('orgcode', isEqualTo: orgController.text.toString()).get();
     if (querySnapshot.docs.isNotEmpty) {
       print("DATAPRINT=>${querySnapshot.docs[0].id}");
-      QuerySnapshot querySnapshotin = await  FirebaseFirestore.instance.collection('org/${querySnapshot.docs[0].id}/users').where('mo_no', isEqualTo: userController.text.toString() ).get();
+      // Fluttertoast.showToast(msg: 'we send otp as soon');
+
+      QuerySnapshot querySnapshotin = await  FirebaseFirestore.instance.collection('org/${querySnapshot.docs[0].id}/users').where('mo_no', isEqualTo: userController.text.toString()).get();
+
+
       if(querySnapshotin.docs.isNotEmpty)
         {
-          print("DATAPRINT=>${querySnapshotin.docs[0].id}");
+          print("DATAPRINTOK=>${querySnapshotin.docs[0].id}");
+          Fluttertoast.showToast(msg: 'We send otp soon');
+          Navigator.push(context, MaterialPageRoute(builder: (context) => OTPverification(userController.text),));
         }
-      setState(() {
-        _exists = true;
-      });
-      Fluttertoast.showToast(msg: 'true');
+      else{
+        Fluttertoast.showToast(msg: 'Number is not valid');
+      }
+
     } else {
       setState(() {
         _exists = false;
       });
-      Fluttertoast.showToast(msg: 'false');
+      Fluttertoast.showToast(msg: 'org code is invalid');
     }
 
 
@@ -155,7 +163,22 @@ class _imagetestingState extends State<LoginScreen> {
   // }
 
 
+  Future checkFirstSeen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool _seen = (prefs.getBool('seen') ?? false);
 
+    if (_seen) {
+      Navigator.of(context as BuildContext).pushReplacement(
+          new MaterialPageRoute(builder: (context) => new LoginScreen()));
+    } else {
+      await prefs.setBool('seen', true);
+      Navigator.of(context as BuildContext).pushReplacement(
+          new MaterialPageRoute(builder: (context) => new Student_Listing()));
+    }
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) => checkFirstSeen();
 
   @override
   Widget build(BuildContext context) {

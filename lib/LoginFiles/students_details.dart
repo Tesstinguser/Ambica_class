@@ -1,19 +1,57 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'Edit_Profile.dart';
 import 'students_profiles.dart';
 
 class StudentDetilas extends StatefulWidget {
-  const StudentDetilas({super.key});
+  final List storedocs;
+
+  StudentDetilas({Key? key, required this.storedocs}) : super(key: key);
 
   @override
   State<StudentDetilas> createState() => _StudentDetilasState();
 }
 
 class _StudentDetilasState extends State<StudentDetilas> {
+
+  final Stream<QuerySnapshot> studentsStream =  FirebaseFirestore.instance.collection('demo').snapshots();
+
+  // For Deleting User
+  CollectionReference students = FirebaseFirestore.instance.collection('demo');
+
+  Future<void> deleteUser(id) {
+    // print("User Deleted $id");
+    return students
+        .doc(id)
+        .delete()
+        .then((value) => print('User Deleted'))
+        .catchError((error) => print('Failed to Delete user: $error'));
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+        stream: studentsStream,
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            print('Something went Wrong');
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final List storedocs = [];
+          snapshot.data!.docs.map((DocumentSnapshot document) {
+            Map a = document.data() as Map<String, dynamic>;
+            storedocs.add(a);
+            a['id'] = document.id;
+          }).toList();
     return Scaffold(
       backgroundColor: Color(0xff454283),
       body: SingleChildScrollView(
@@ -46,18 +84,25 @@ class _StudentDetilasState extends State<StudentDetilas> {
                       ),
                       Row(
                         children: [
-                          Icon(Icons.delete_outline_rounded,
-                              color: Colors.white, size: 35),
+
+                          InkWell(
+                                onTap: () {
+                                  Fluttertoast.showToast(msg: 'Delete user');
+                                  deleteUser(storedocs[0]['id']);
+
+                                  },
+                             // onTap: () => {deleteUser(storedocs[0]['id']),},
+
+                            child: Icon(Icons.delete_outline_rounded,
+                                color: Colors.white, size: 35),
+                          ),
                           SizedBox(
                             width: 15,
                           ),
                           InkWell(
                               onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => StudentsProfiles(),
-                                    ));
+                                // Navigator.push(context,MaterialPageRoute(builder: (context) => EditProfile(id: storedocs[i]['id']),));
+                                // Navigator.push(context,MaterialPageRoute(builder: (context) => StudentsProfiles(),));
                               },
                               child: Icon(Icons.edit,
                                   color: Colors.white, size: 35)),
@@ -97,7 +142,8 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                         children: [
                                           Container(
                                               margin: EdgeInsets.only(left: 21),
-                                              child: Text('UserName',
+                                              child: Text(
+                                                  widget.storedocs[0]['name'],
                                                   style: TextStyle(
                                                       color: Colors.black,
                                                       fontSize: 16,
@@ -124,7 +170,8 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                                     fontSize: 15),
                                               ),
                                               SizedBox(width: 5),
-                                              Text('dummy ',
+                                              Text(
+                                                  widget.storedocs[0]['branch'],
                                                   style: TextStyle(
                                                       color: Color(0xff454283),
                                                       fontWeight:
@@ -152,7 +199,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                                     fontSize: 16),
                                               ),
                                               SizedBox(width: 5),
-                                              Text('5',
+                                              Text(widget.storedocs[0]['email'],
                                                   style: TextStyle(
                                                       color: Color(0xff454283),
                                                       fontWeight:
@@ -167,7 +214,8 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                                           FontWeight.bold,
                                                       fontSize: 15)),
                                               SizedBox(width: 5),
-                                              Text('2023',
+
+                                              Text(widget.storedocs[0]['year'],
                                                   style: TextStyle(
                                                       color: Color(0xff454283),
                                                       fontWeight:
@@ -258,7 +306,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                     SizedBox(width: 19),
                                     InkWell(
                                       onTap: () {
-                                        _makingPhoneCall();
+                                        // _makingPhoneCall();
                                       },
                                       child: Icon(
                                         CupertinoIcons.phone_arrow_down_left,
@@ -266,7 +314,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                       ),
                                     ),
                                     SizedBox(width: 5),
-                                    Text('917817878653 ',
+                                    Text(widget.storedocs[0]['number'],
                                         style: TextStyle(
                                             color: Color(0xff454283),
                                             fontWeight: FontWeight.bold,
@@ -278,7 +326,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                     SizedBox(width: 19),
                                     Icon(Icons.email),
                                     SizedBox(width: 5),
-                                    Text('mjbharmal@gmail.com ',
+                                    Text(widget.storedocs[0]['email'],
                                         style: TextStyle(
                                             color: Color(0xff454283),
                                             fontWeight: FontWeight.bold,
@@ -288,7 +336,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                 Container(
                                     margin: EdgeInsets.only(left: 19),
                                     child: Text(
-                                      "Marwadi University",
+                                      widget.storedocs[0]['clg/uni'],
                                       style: TextStyle(
                                         color: Color(0xff454283),
                                         fontWeight: FontWeight.bold,
@@ -328,7 +376,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                           fontSize: 15),
                                     ),
                                     SizedBox(width: 5),
-                                    Text('dummy ',
+                                    Text(widget.storedocs[0]['sfname'],
                                         style: TextStyle(
                                             color: Color(0xff454283),
                                             fontWeight: FontWeight.bold,
@@ -347,7 +395,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                           fontSize: 15),
                                     ),
                                     SizedBox(width: 5),
-                                    Text('dummy ',
+                                    Text(widget.storedocs[0]['sfoccupations'],
                                         style: TextStyle(
                                             color: Color(0xff454283),
                                             fontWeight: FontWeight.bold,
@@ -363,7 +411,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                       size: 23,
                                     ),
                                     SizedBox(width: 5),
-                                    Text('917817878653 ',
+                                    Text(widget.storedocs[0]['sfnumber'],
                                         style: TextStyle(
                                             color: Color(0xff454283),
                                             fontWeight: FontWeight.bold,
@@ -376,7 +424,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                     SizedBox(width: 30),
                                     Icon(Icons.email),
                                     SizedBox(width: 5),
-                                    Text('mjbharmal@gmail.com ',
+                                    Text(widget.storedocs[0]['sfemail'],
                                         style: TextStyle(
                                             color: Color(0xff454283),
                                             fontWeight: FontWeight.bold,
@@ -408,7 +456,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                           fontSize: 15),
                                     ),
                                     SizedBox(width: 5),
-                                    Text('dummy ',
+                                    Text(widget.storedocs[0]['smname'],
                                         style: TextStyle(
                                             color: Color(0xff454283),
                                             fontWeight: FontWeight.bold,
@@ -427,7 +475,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                           fontSize: 15),
                                     ),
                                     SizedBox(width: 5),
-                                    Text('dummy ',
+                                    Text(widget.storedocs[0]['smoccupations'],
                                         style: TextStyle(
                                             color: Color(0xff454283),
                                             fontWeight: FontWeight.bold,
@@ -443,7 +491,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                       size: 23,
                                     ),
                                     SizedBox(width: 5),
-                                    Text('917817878653 ',
+                                    Text(widget.storedocs[0]['smnumber'],
                                         style: TextStyle(
                                             color: Color(0xff454283),
                                             fontWeight: FontWeight.bold,
@@ -456,7 +504,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                     SizedBox(width: 30),
                                     Icon(Icons.email),
                                     SizedBox(width: 5),
-                                    Text('mjbharmal@gmail.com ',
+                                    Text(widget.storedocs[0]['smemail'],
                                         style: TextStyle(
                                             color: Color(0xff454283),
                                             fontWeight: FontWeight.bold,
@@ -488,7 +536,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                           fontSize: 15),
                                     ),
                                     SizedBox(width: 5),
-                                    Text('dummy ',
+                                    Text(widget.storedocs[0]['sgname'],
                                         style: TextStyle(
                                             color: Color(0xff454283),
                                             fontWeight: FontWeight.bold,
@@ -507,7 +555,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                           fontSize: 15),
                                     ),
                                     SizedBox(width: 5),
-                                    Text('dummy ',
+                                    Text(widget.storedocs[0]['sgoccupations'],
                                         style: TextStyle(
                                             color: Color(0xff454283),
                                             fontWeight: FontWeight.bold,
@@ -522,7 +570,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                       CupertinoIcons.phone_arrow_down_left,
                                     ),
                                     SizedBox(width: 5),
-                                    Text('917817878653 ',
+                                    Text(widget.storedocs[0]['sgnumber'],
                                         style: TextStyle(
                                             color: Color(0xff454283),
                                             fontWeight: FontWeight.bold,
@@ -535,7 +583,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                     SizedBox(width: 30),
                                     Icon(Icons.email),
                                     SizedBox(width: 5),
-                                    Text('mjbharmal@gmail.com ',
+                                    Text(widget.storedocs[0]['sgemail'],
                                         style: TextStyle(
                                             color: Color(0xff454283),
                                             fontWeight: FontWeight.bold,
@@ -563,7 +611,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                 Padding(
                                   padding: const EdgeInsets.only(left: 50),
                                   child: Text(
-                                    "Addresline 1:",
+                                    widget.storedocs[0]['addressline1'],
                                     style: TextStyle(
                                       color: Color(0xff666565),
                                       fontWeight: FontWeight.bold,
@@ -574,7 +622,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                 Padding(
                                   padding: const EdgeInsets.only(left: 50),
                                   child: Text(
-                                    "Addresline 2:",
+                                    widget.storedocs[0]['addressline2'],
                                     style: TextStyle(
                                       color: Color(0xff666565),
                                       fontWeight: FontWeight.bold,
@@ -585,7 +633,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                 Padding(
                                   padding: const EdgeInsets.only(left: 50),
                                   child: Text(
-                                    "Addresline 3:",
+                                    widget.storedocs[0]['addressline3'],
                                     style: TextStyle(
                                       color: Color(0xff666565),
                                       fontWeight: FontWeight.bold,
@@ -615,12 +663,13 @@ class _StudentDetilasState extends State<StudentDetilas> {
     );
   }
 
-  _makingPhoneCall() async {
-    var url = Uri.parse("tel:9776765434");
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
+  // _makingPhoneCall() async {
+  //   var url = Uri.parse("tel:9776765434");
+  //   if (await canLaunchUrl(url)) {
+  //     await launchUrl(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
+    );}
 }

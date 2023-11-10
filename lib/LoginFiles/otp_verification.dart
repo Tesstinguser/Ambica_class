@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
@@ -17,9 +18,11 @@ class OTPverification extends StatefulWidget {
 
 class _TTPverificationState extends State<OTPverification> {
   @override
+
   static const countdownDuration = Duration(minutes: 2);
   late Timer _timer;
   Duration _duration = countdownDuration;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -118,9 +121,9 @@ class _TTPverificationState extends State<OTPverification> {
               margin: EdgeInsets.only(left: 25,right: 20,top: MediaQuery.of(context).size.height*0.4),
               child: ElevatedButton(
                   style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color(0xff555288))),
-                  onPressed: () {
-
+                    onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => Student_Listing(),));
+
                   }, child: Text("Submit")),
             ),
           ),
@@ -128,5 +131,22 @@ class _TTPverificationState extends State<OTPverification> {
         ],
       ),
     );
+  }
+  void verifyOTP(String verificationId, String otp) async {
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(
+      verificationId: verificationId,
+      smsCode: otp,
+    );
+
+    try {
+      UserCredential userCredential =
+      await _auth.signInWithCredential(credential);
+      // OTP verification successful
+      User? user = userCredential.user;
+      print('User ID: ${user?.uid}');
+    } catch (e) {
+      // OTP verification failed
+      print('Error: $e');
+    }
   }
 }
