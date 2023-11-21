@@ -101,7 +101,8 @@ class _StudentDetilasState extends State<StudentDetilas> {
                           ),
                           InkWell(
                               onTap: () {
-                                // Navigator.push(context,MaterialPageRoute(builder: (context) => EditProfile(id: storedocs[i]['id']),));
+                                for (var i = 0; i < storedocs.length; i++)
+                                Navigator.push(context,MaterialPageRoute(builder: (context) => EditProfile(id: storedocs[i]['id']),));
                                 // Navigator.push(context,MaterialPageRoute(builder: (context) => StudentsProfiles(),));
                               },
                               child: Icon(Icons.edit,
@@ -199,7 +200,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                                     fontSize: 16),
                                               ),
                                               SizedBox(width: 5),
-                                              Text(widget.storedocs[0]['email'],
+                                              Text(widget.storedocs[0]['sem'],
                                                   style: TextStyle(
                                                       color: Color(0xff454283),
                                                       fontWeight:
@@ -275,8 +276,7 @@ class _StudentDetilasState extends State<StudentDetilas> {
                                           margin:
                                               EdgeInsets.only(top: 0, left: 25),
                                           child: ClipOval(
-                                            child: Image.asset(
-                                              'assets/Images/userimg.png',
+                                            child: Image.asset('assets/Images/userimg.png',
                                               width: 90,
                                               height: 90,
                                               fit: BoxFit.cover,

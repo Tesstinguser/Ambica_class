@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:untitled1/LoginFiles/student_listing.dart';
 
 class EditProfile extends StatefulWidget {
   final String id;
@@ -17,17 +19,25 @@ class _AddState extends State<EditProfile> {
   // Updaing Student
   CollectionReference students = FirebaseFirestore.instance.collection('demo');
 
-  Future<void> updateUser(id, name , email) {
+  Future<void> updateUser(id, name , email, number , adrresline1 , adrresline2 , adrresline3 ,city , zipcode , state , country) {
     return students
         .doc(id)
         .update({
       'name': name,
-      'email': email
-
+      'email': email,
+      'number' : number,
+      'addressline1': adrresline1,
+      'addressline2': adrresline2,
+      'addressline3': adrresline3,
+      'city': city,
+      'zipcode': zipcode,
+      'state': state,
+      'country': country,
     })
         .then((value) => print("User Updated"))
         .catchError((error) => print("Failed to update user: $error"));
   }
+
 
 
 
@@ -36,23 +46,35 @@ class _AddState extends State<EditProfile> {
     return Scaffold(
       backgroundColor: Color(0xff454283),
       body: Form(
-        child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        key: _formKey,
+        child:
+        FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
             future: FirebaseFirestore.instance
-                .collection('students')
+                .collection('demo')
                 .doc(widget.id)
                 .get(),
-            builder: (_, snapshot) {
+            builder: (context , snapshot) {
               if (snapshot.hasError) {
                 print('Something Went Wrong');
               }
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
+                // return Center(
+                //   child: CircularProgressIndicator(),
+                // );
               }
+
               var data = snapshot.data!.data();
               var name = data!['name'];
               var email = data['email'];
+              var number = data['number'];
+              var adrresline1 = data['addressline1'];
+              var adrresline2 = data['addressline2'];
+              var adrresline3 = data['addressline3'];
+              var city = data['city'];
+              var zipcode = data['zipcode'];
+              var state = data['state'];
+              var country = data['country'];
+
 
               return SafeArea(
                   child: SingleChildScrollView(
@@ -118,6 +140,7 @@ class _AddState extends State<EditProfile> {
                                   padding: const EdgeInsets.only(
                                       left: 23, right: 23, top: 10),
                                   child: TextFormField(
+                                    keyboardType: TextInputType.text,
                                     initialValue: name,
                                     autofocus: false,
                                     onChanged: (value) => name = value,
@@ -135,21 +158,61 @@ class _AddState extends State<EditProfile> {
                                     ),
                                   ),
                                 ),
+                                // TextFormField(
+                                //   initialValue: email,
+                                //   autofocus: false,
+                                //   onChanged: (value) => email = value,
+                                //   decoration: InputDecoration(
+                                //     labelText: 'Email: ',
+                                //     labelStyle: TextStyle(fontSize: 20.0),
+                                //     border: OutlineInputBorder(),
+                                //     errorStyle:
+                                //     TextStyle(color: Colors.redAccent, fontSize: 15),
+                                //   ),
+                                //   validator: (value) {
+                                //     if (value == null || value.isEmpty) {
+                                //       return 'Please Enter Email';
+                                //     } else if (!value.contains('@')) {
+                                //       return 'Please Enter Valid Email';
+                                //     }
+                                //     return null;
+                                //   },
+                                // ),
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       left: 23, right: 23, top: 10),
-                                  child: TextField(
+                                  child: TextFormField(
+                                    initialValue: email,
+                                    autofocus: false,
+                                    onChanged: (value) => email = value,
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(),
                                       hintText: 'Email',
                                       labelText: 'Email',
                                     ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please Enter Email';
+                                      } else if (!value.contains('@')) {
+                                        return 'Please Enter Valid Email';
+                                      }
+                                      return null;
+                                    },
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       left: 23, right: 23, top: 10),
-                                  child: TextField(
+                                  child: TextFormField(
+                                    initialValue: number,
+                                    autofocus: false,
+                                    onChanged: (value) => number = value,
+                                    validator: (value) {
+                                      if (value == null   || value.isEmpty) {
+                                        return 'Please Enter Name';
+                                      }
+                                      return null;
+                                    },
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(),
                                       hintText: 'Number',
@@ -160,7 +223,16 @@ class _AddState extends State<EditProfile> {
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       left: 23, right: 23, top: 10),
-                                  child: TextField(
+                                  child: TextFormField(
+                                    initialValue: adrresline1,
+                                    autofocus: false,
+                                    onChanged: (value) => adrresline1 = value,
+                                    validator: (value) {
+                                      if (value == null   || value.isEmpty) {
+                                        return 'Please Enter Name';
+                                      }
+                                      return null;
+                                    },
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(),
                                       hintText: 'AddresLine1',
@@ -171,7 +243,16 @@ class _AddState extends State<EditProfile> {
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       left: 23, right: 23, top: 10),
-                                  child: TextField(
+                                  child: TextFormField(
+                                    initialValue: adrresline2,
+                                    autofocus: false,
+                                    onChanged: (value) => adrresline2 = value,
+                                    validator: (value) {
+                                      if (value == null   || value.isEmpty) {
+                                        return 'Please Enter Name';
+                                      }
+                                      return null;
+                                    },
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(),
                                       hintText: 'AddresLine2',
@@ -182,7 +263,16 @@ class _AddState extends State<EditProfile> {
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       left: 23, right: 23, top: 10),
-                                  child: TextField(
+                                  child: TextFormField(
+                                    initialValue: adrresline3,
+                                    autofocus: false,
+                                    onChanged: (value) => adrresline3 = value,
+                                    validator: (value) {
+                                      if (value == null   || value.isEmpty) {
+                                        return 'Please Enter Name';
+                                      }
+                                      return null;
+                                    },
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(),
                                       hintText: 'AddresLine3',
@@ -196,7 +286,16 @@ class _AddState extends State<EditProfile> {
                                       child: Padding(
                                         padding: EdgeInsets.only(
                                             left: 23, right: 0, top: 10),
-                                        child: TextField(
+                                        child: TextFormField(
+                                          initialValue: city,
+                                          autofocus: false,
+                                          onChanged: (value) => city = value,
+                                          validator: (value) {
+                                            if (value == null   || value.isEmpty) {
+                                              return 'Please Enter Name';
+                                            }
+                                            return null;
+                                          },
                                           decoration: InputDecoration(
                                             border: OutlineInputBorder(),
                                             hintText: 'Student’s City ',
@@ -209,7 +308,16 @@ class _AddState extends State<EditProfile> {
                                       child: Padding(
                                         padding: EdgeInsets.only(
                                             left: 10, right: 23, top: 10),
-                                        child: TextField(
+                                        child: TextFormField(
+                                          initialValue: zipcode,
+                                          autofocus: false,
+                                          onChanged: (value) => zipcode = value,
+                                          validator: (value) {
+                                            if (value == null   || value.isEmpty) {
+                                              return 'Please Enter Name';
+                                            }
+                                            return null;
+                                          },
                                           decoration: InputDecoration(
                                             border: OutlineInputBorder(),
                                             hintText: 'Zip code',
@@ -226,7 +334,16 @@ class _AddState extends State<EditProfile> {
                                       child: Padding(
                                         padding: EdgeInsets.only(
                                             left: 23, right: 0, top: 10),
-                                        child: TextField(
+                                        child: TextFormField(
+                                          initialValue: state,
+                                          autofocus: false,
+                                          onChanged: (value) => state = value,
+                                          validator: (value) {
+                                            if (value == null   || value.isEmpty) {
+                                              return 'Please Enter Name';
+                                            }
+                                            return null;
+                                          },
                                           decoration: InputDecoration(
                                             border: OutlineInputBorder(),
                                             hintText: 'State ',
@@ -239,7 +356,16 @@ class _AddState extends State<EditProfile> {
                                       child: Padding(
                                         padding: EdgeInsets.only(
                                             left: 10, right: 23, top: 10),
-                                        child: TextField(
+                                        child: TextFormField(
+                                          initialValue: country,
+                                          autofocus: false,
+                                          onChanged: (value) => country = value,
+                                          validator: (value) {
+                                            if (value == null   || value.isEmpty) {
+                                              return 'Please Enter Name';
+                                            }
+                                            return null;
+                                          },
                                           decoration: InputDecoration(
                                             border: OutlineInputBorder(),
                                             hintText: 'Country',
@@ -273,7 +399,7 @@ class _AddState extends State<EditProfile> {
                                           right: 10,
                                           top: 10,
                                           bottom: 10),
-                                      child: ElevatedButton(
+                                        child: ElevatedButton(
                                           onPressed: () {},
                                           style: ButtonStyle(
                                               backgroundColor:
@@ -322,8 +448,16 @@ class _AddState extends State<EditProfile> {
                                                     .size
                                                     .width *
                                                 0.35,
-                                            child: Expanded(
-                                              flex: 1,
+                                            child: InkWell(
+                                              onTap: () {
+                                                if (_formKey.currentState!.validate()) {
+                                                  updateUser(
+                                                      widget.id, name , email, number , adrresline1 , adrresline2 , adrresline3 ,city , zipcode , state , country);
+                                                  Navigator.pop(context);
+
+                                                 // Navigator.push(context, MaterialPageRoute(builder: (context) => Student_Listing()));
+                                                                                                  }
+                                              },
                                               child: Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,

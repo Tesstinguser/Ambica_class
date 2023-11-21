@@ -18,18 +18,15 @@ class LoginScreen extends StatefulWidget {
   @override
   State<LoginScreen> createState() => _imagetestingState();
 }
-
 class _imagetestingState extends State<LoginScreen> {
   String myText1 = 'ok';
   final orgController = TextEditingController();
-
   TextEditingController userController = TextEditingController();
   String? phoneNumber;
   TextEditingController codeController = TextEditingController();
   String verifId = '';
   bool isSent = false;
   bool _exists = false;
-
 
   void _signInWithPhone(BuildContext context) async {
     if (phoneNumber != null && phoneNumber!.isNotEmpty) {
@@ -68,9 +65,7 @@ class _imagetestingState extends State<LoginScreen> {
       }
     }
   }
-
   // Assuming you have a reference to the document
-
   Future<void> checkIfExists() async {
 
     // DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance.collection('org').doc().get();

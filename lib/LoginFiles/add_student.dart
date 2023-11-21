@@ -1,7 +1,15 @@
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AddandEditScreen extends StatefulWidget {
   const AddandEditScreen({super.key});
@@ -60,6 +68,7 @@ class _AddState extends State<AddandEditScreen> {
   var sgemail = "";
   var sgnumber = "";
 
+
   final studensnamecontroller = TextEditingController();
   final branchnamecontroller = TextEditingController();
   final semcontroller = TextEditingController();
@@ -91,7 +100,7 @@ class _AddState extends State<AddandEditScreen> {
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
-    super.dispose();
+
     studensnamecontroller.dispose();
     branchnamecontroller.dispose();
     semcontroller.dispose();
@@ -151,6 +160,7 @@ class _AddState extends State<AddandEditScreen> {
     sgemailcontroller.clear();
     sgnumbercontroller.clear();
   }
+
 //   Future<void> addUser() async {
 //     DocumentReference studentDocRef = FirebaseFirestore.instance.collection('students').doc();
 //
@@ -165,7 +175,7 @@ class _AddState extends State<AddandEditScreen> {
 //   }
 // Adding Student
 //   CollectionReference org = FirebaseFirestore.instance.collection('org');
-   DocumentReference org = FirebaseFirestore.instance.collection('demo').doc();
+  DocumentReference org = FirebaseFirestore.instance.collection('demo').doc();
 
   Future<void> addUser() {
     return org
@@ -197,12 +207,58 @@ class _AddState extends State<AddandEditScreen> {
           'sgoccupations': sgoccupations,
           'sgemail': sgemail,
           'sgnumber': sgnumber,
+
         })
         .then((value) => print('User Added'))
         .catchError((error) => print('Failed to Add user: $error'));
   }
-  //set user
 
+
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
+  File? _photo;
+  final ImagePicker _picker = ImagePicker();
+
+  Future imgFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _photo = File(pickedFile.path);
+        uploadFile();
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future imgFromCamera() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        _photo = File(pickedFile.path);
+        uploadFile();
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future uploadFile() async {
+    if (_photo == null) return;
+    final fileName = basename(_photo!.path);
+    final destination = 'studnetsimages/$fileName';
+    try {
+      final ref = firebase_storage.FirebaseStorage.instance
+          .ref(destination)
+          .child('images/');
+      await ref.putFile(_photo!);
+    } catch (e) {
+      print('error occured');
+      Fluttertoast.showToast(msg: e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -306,7 +362,6 @@ class _AddState extends State<AddandEditScreen> {
                                     setState(() {
                                       xAlign = signInAlign;
                                       signInColor = selectedColor;
-
                                       loginColor = normalColor;
                                     });
                                   },
@@ -333,13 +388,42 @@ class _AddState extends State<AddandEditScreen> {
                             children: [
                               Padding(
                                 padding: EdgeInsets.only(left: 19, top: 30),
-                                child: Image.asset(
-                                  'assets/Images/cameraimg.png',
-                                  width:
-                                      MediaQuery.of(context).size.height * 0.14,
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.14,
-                                  fit: BoxFit.cover,
+                                child: InkWell(
+                                  onTap: () {
+                                    _showPicker(context);
+                                    // myAlert();
+                                  },
+                                  child: _photo != null
+                                      ? Container(
+                                          margin: EdgeInsets.only(top: 7),
+                                          child: Image.file(
+                                            File(_photo!.path),
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.14,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.14,
+                                            fit: BoxFit.cover,
+                                          ))
+                                      : Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 50),
+                                            child: Text("Select image",
+                                                textAlign: TextAlign.end),
+                                          )),
+                                  // child: Image.asset(
+                                  //   'assets/Images/cameraimg.png',
+                                  //   width: MediaQuery.of(context).size.height *
+                                  //       0.14,
+                                  //   height: MediaQuery.of(context).size.height *
+                                  //       0.14,
+                                  //   fit: BoxFit.cover,
+                                  // ),
                                 ),
                               ),
                               Column(
@@ -357,6 +441,7 @@ class _AddState extends State<AddandEditScreen> {
                                               left: 23, right: 23, top: 10),
                                           child: TextField(
                                             controller: studensnamecontroller,
+                                            keyboardType: TextInputType.text,
                                             decoration: InputDecoration(
                                               border: OutlineInputBorder(),
                                               hintText: 'Student’s  Name',
@@ -386,6 +471,7 @@ class _AddState extends State<AddandEditScreen> {
                                           padding: EdgeInsets.only(
                                               left: 23, right: 3, top: 10),
                                           child: TextField(
+                                            keyboardType: TextInputType.phone,
                                             controller: semcontroller,
                                             decoration: InputDecoration(
                                               border: OutlineInputBorder(),
@@ -400,6 +486,7 @@ class _AddState extends State<AddandEditScreen> {
                                           padding: EdgeInsets.only(
                                               left: 10, right: 23, top: 10),
                                           child: TextField(
+                                            keyboardType: TextInputType.phone,
                                             controller: yearcontroller,
                                             decoration: InputDecoration(
                                               border: OutlineInputBorder(),
@@ -415,6 +502,7 @@ class _AddState extends State<AddandEditScreen> {
                                     padding: const EdgeInsets.only(
                                         left: 23, right: 23, top: 10),
                                     child: TextField(
+                                      keyboardType: TextInputType.emailAddress,
                                       controller: emailcontroller,
                                       decoration: InputDecoration(
                                         border: OutlineInputBorder(),
@@ -427,6 +515,7 @@ class _AddState extends State<AddandEditScreen> {
                                     padding: const EdgeInsets.only(
                                         left: 23, right: 23, top: 10),
                                     child: TextField(
+                                      keyboardType: TextInputType.phone,
                                       controller: numbercontroller,
                                       decoration: InputDecoration(
                                         border: OutlineInputBorder(),
@@ -510,6 +599,7 @@ class _AddState extends State<AddandEditScreen> {
                                               hintText: 'Zip code',
                                               labelText: 'Zip code',
                                             ),
+                                            keyboardType: TextInputType.text,
                                           ),
                                         ),
                                       ),
@@ -641,6 +731,7 @@ class _AddState extends State<AddandEditScreen> {
                                         hintText: 'Student’s Father Name',
                                         labelText: 'Student’s Father Name',
                                       ),
+                                      keyboardType: TextInputType.text,
                                     ),
                                   ),
                                   Padding(
@@ -679,6 +770,7 @@ class _AddState extends State<AddandEditScreen> {
                                         hintText: 'Student’s Father Number',
                                         labelText: 'Student’s Father Number',
                                       ),
+                                      keyboardType: TextInputType.number,
                                     ),
                                   ),
                                   SizedBox(height: 17),
@@ -753,6 +845,7 @@ class _AddState extends State<AddandEditScreen> {
                                         hintText: 'Student’s Mother Number',
                                         labelText: 'Student’s Mother Number',
                                       ),
+                                      keyboardType: TextInputType.number,
                                     ),
                                   ),
                                   SizedBox(height: 17),
@@ -827,6 +920,7 @@ class _AddState extends State<AddandEditScreen> {
                                         hintText: 'Student’s Guardian Number',
                                         labelText: 'Student’s Guardian Number',
                                       ),
+                                      keyboardType: TextInputType.number,
                                     ),
                                   ),
                                   SizedBox(
@@ -878,48 +972,69 @@ class _AddState extends State<AddandEditScreen> {
                                             right: 10, bottom: 10, top: 10),
                                         child: ElevatedButton(
                                             onPressed: () {
-
-                                              if (_formKey.currentState!.validate()) {
+                                              if (_formKey.currentState!
+                                                  .validate()) {
                                                 // addUser();
                                                 // clearText();
                                                 setState(() {
                                                   // number = numbercontroller.text;
-                                                   studensname = studensnamecontroller.text;
-                                                   branch = branchnamecontroller.text;
-                                                   sem = semcontroller.text;
-                                                   year = yearcontroller.text;
-                                                   email = emailcontroller.text;
-                                                   number = numbercontroller.text;
-                                                   clg = clgcontroller.text;
-                                                   adrresline1 = addres1controller.text;
-                                                   adrresline2 = addres2controller.text;
-                                                   adrresline3 = addres3controller.text;
-                                                   city = citycontroller.text;
-                                                   zipcode = zipcodecontroller.text;
-                                                   state = statecontroller.text;
-                                                   country = countrycontroller.text;
-                                                   subjects = subjectscontroller.text;
-                                                   sfname = sfnamecontroller.text;
-                                                   sfoccupations = sfoccupcontroller.text;
-                                                   sfemail = sfemailcontroller.text;
-                                                   sfnumber = sfnumbercontroller.text;
-                                                   smname = smnamecontroller.text;
-                                                   smoccupations = smoccupcontroller.text;
-                                                   smemail = smemailcontroller.text;
-                                                   smnumber = smnumbercontroller.text;
-                                                  sgname = sgnamecontroller.text;
-                                                   sgoccupations = sgoccupcontroller.text;
-                                                   sgemail = sgemailcontroller.text;
-                                                   sgnumber = sgnumbercontroller.text;
+                                                  studensname =
+                                                      studensnamecontroller
+                                                          .text;
+                                                  branch =
+                                                      branchnamecontroller.text;
+                                                  sem = semcontroller.text;
+                                                  year = yearcontroller.text;
+                                                  email = emailcontroller.text;
+                                                  number =
+                                                      numbercontroller.text;
+                                                  clg = clgcontroller.text;
+                                                  adrresline1 =
+                                                      addres1controller.text;
+                                                  adrresline2 =
+                                                      addres2controller.text;
+                                                  adrresline3 =
+                                                      addres3controller.text;
+                                                  city = citycontroller.text;
+                                                  zipcode =
+                                                      zipcodecontroller.text;
+                                                  state = statecontroller.text;
+                                                  country =
+                                                      countrycontroller.text;
+                                                  subjects =
+                                                      subjectscontroller.text;
+                                                  sfname =
+                                                      sfnamecontroller.text;
+                                                  sfoccupations =
+                                                      sfoccupcontroller.text;
+                                                  sfemail =
+                                                      sfemailcontroller.text;
+                                                  sfnumber =
+                                                      sfnumbercontroller.text;
+                                                  smname =
+                                                      smnamecontroller.text;
+                                                  smoccupations =
+                                                      smoccupcontroller.text;
+                                                  smemail =
+                                                      smemailcontroller.text;
+                                                  smnumber =
+                                                      smnumbercontroller.text;
+                                                  sgname =
+                                                      sgnamecontroller.text;
+                                                  sgoccupations =
+                                                      sgoccupcontroller.text;
+                                                  sgemail =
+                                                      sgemailcontroller.text;
+                                                  sgnumber =
+                                                      sgnumbercontroller.text;
 
                                                   addUser();
                                                   clearText();
-                                                  Fluttertoast.showToast(msg: 'Data Insertesd');
-                                                //
+                                                  Fluttertoast.showToast(
+                                                      msg: 'Data Insertesd');
+                                                  //
                                                 });
-
                                               }
-
                                             },
                                             style: ButtonStyle(
                                                 backgroundColor:
@@ -937,7 +1052,7 @@ class _AddState extends State<AddandEditScreen> {
                                                       .size
                                                       .width *
                                                   0.37,
-                                              child: Row(
+                                              child: const Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 crossAxisAlignment:
@@ -966,5 +1081,33 @@ class _AddState extends State<AddandEditScreen> {
         ),
       )),
     );
+  }
+
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Wrap(
+              children: <Widget>[
+                ListTile(
+                    leading: const Icon(Icons.photo_library),
+                    title: const Text('Gallery'),
+                    onTap: () {
+                      imgFromGallery();
+                      Navigator.of(context).pop();
+                    }),
+                ListTile(
+                  leading: const Icon(Icons.photo_camera),
+                  title: const Text('Camera'),
+                  onTap: () {
+                    imgFromCamera();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        });
   }
 }

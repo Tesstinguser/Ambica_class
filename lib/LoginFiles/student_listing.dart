@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../Unusalbefile/firebaseimagestore.dart';
 import 'add_student.dart';
 import 'Edit_Profile.dart';
 import 'students_profiles.dart';
@@ -26,7 +27,7 @@ class _RespactedloginState extends State<Student_Listing> {
             print('Something went Wrong');
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return  Center(
               child: CircularProgressIndicator(),
             );
           }
@@ -41,7 +42,7 @@ class _RespactedloginState extends State<Student_Listing> {
             backgroundColor: Color(0xff454283),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-
+                // Navigator.push(context,MaterialPageRoute(builder: (context) => ImageUploads()));
                 Navigator.push(context,MaterialPageRoute(builder: (context) => AddandEditScreen()));
               },
               backgroundColor: Color(0xff454283),
@@ -60,8 +61,7 @@ class _RespactedloginState extends State<Student_Listing> {
                             alignment: Alignment.topRight,
                             child: Container(
                                 padding: EdgeInsets.only(right: 20, top: 35),
-                                child: Image.asset(
-                                    "assets/Images/Vector.png"))),
+                                child: Image.asset("assets/Images/Vector.png"))),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [

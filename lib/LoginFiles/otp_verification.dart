@@ -122,8 +122,7 @@ class _TTPverificationState extends State<OTPverification> {
               child: ElevatedButton(
                   style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color(0xff555288))),
                     onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Student_Listing(),));
-
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Student_Listing()));
                   }, child: Text("Submit")),
             ),
           ),
