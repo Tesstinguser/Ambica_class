@@ -39,7 +39,6 @@ class _AddState extends State<AddandEditScreen> {
   }
 
   final _formKey = GlobalKey<FormState>();
-
   var studensname = "";
   var branch = "";
   var sem = "";
@@ -67,7 +66,6 @@ class _AddState extends State<AddandEditScreen> {
   var sgoccupations = "";
   var sgemail = "";
   var sgnumber = "";
-
 
   final studensnamecontroller = TextEditingController();
   final branchnamecontroller = TextEditingController();

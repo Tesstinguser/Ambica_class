@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import '../Unusalbefile/firebaseimagestore.dart';
 import 'add_student.dart';
 import 'Edit_Profile.dart';
@@ -37,6 +37,80 @@ class _RespactedloginState extends State<Student_Listing> {
             storedocs.add(a);
             a['id'] = document.id;
           }).toList();
+          // searchfunction(var SearchText) {
+          //   setState(() {});
+          //   arrTempNutritonList.clear();
+          //   if (SearchText.toString().trim().isNotEmpty) {
+          //     for (var nunutrition in arrNutritonList) {
+          //       if (nunutrition.NutritionTitle.toLowerCase()
+          //           .contains(SearchText.toString().toLowerCase())) {
+          //         arrTempNutritonList.add(nunutrition);
+          //       }
+          //     }
+          //     if (arrTempNutritonList.isEmpty) {
+          //       Fluttertoast.showToast(msg: "Not matched");
+          //     }
+          //   } else {
+          //     arrTempNutritonList.addAll(arrNutritonList);
+          //   }
+          // }
+
+          // searchfunction(var SearchText) {
+          //   setState(() {
+          //     if (SearchText.toString().trim().isNotEmpty){
+          //       List searchResults = storedocs.where((doc) {
+          //         String name = doc['name'] ?? '';
+          //         return name.toLowerCase().contains(SearchText.toLowerCase());
+          //       }).toList();
+          //       print("Studentsname=>${searchResults}");
+          //       print("Studentsname=>${searchResults.length}");
+          //     }
+          //   });
+          // }
+
+
+          // searchfunction(var SearchText) {
+          //   setState(() {});
+          //   arrTempNutritonList.clear();
+          //   if (SearchText.toString().trim().isNotEmpty) {
+          //     for (var nunutrition in arrNutritonList) {
+          //       if (nunutrition.NutritionTitle.toLowerCase()
+          //           .contains(SearchText.toString().toLowerCase())) {
+          //         arrTempNutritonList.add(nunutrition);
+          //       }
+          //     }
+          //     if (arrTempNutritonList.isEmpty) {
+          //       Fluttertoast.showToast(msg: "Not matched");
+          //     }
+          //   } else {
+          //     arrTempNutritonList.addAll(arrNutritonList);
+          //   }
+          // }
+
+          searchfunction(var SearchText) {
+            setState(() {
+            });
+
+            if (SearchText.toString().trim().isNotEmpty) {
+              List searchResults = [];
+              for (var doc in storedocs) {
+                String name = doc['name'] ?? '';
+                if (name.toLowerCase().contains(SearchText.toLowerCase())) {
+                  searchResults.add(doc);
+                }
+              }
+              print("Studentsname=>${searchResults}");
+              print("Studentsname=>${searchResults.length}");
+              if (searchResults.isNotEmpty) {
+                Fluttertoast.showToast(msg: "Name matched!",);
+              }
+              else {
+                Fluttertoast.showToast(msg: "No name matched!",);
+                searchResults.clear();
+              }
+            }
+          }
+
 
           return Scaffold(
             backgroundColor: Color(0xff454283),
@@ -86,10 +160,16 @@ class _RespactedloginState extends State<Student_Listing> {
                                   borderRadius:
                                   BorderRadius.all(Radius.circular(20))),
                               child: TextField(
+                                onChanged: (value) {
+                                  searchfunction(value);
+                                },
                                 decoration: InputDecoration(
+
                                   border: InputBorder.none,
                                   hintText: 'Search',
                                   prefixIcon: Icon(Icons.search),
+
+
                                 ),
                               ),
                             ),
@@ -105,12 +185,13 @@ class _RespactedloginState extends State<Student_Listing> {
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
                           physics: BouncingScrollPhysics(),
+                          // itemCount: storedocs.length,
                           itemCount: storedocs.length,
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: () {
                                 // for (var i = 0; i < storedocs.length; i++)
-                                  Navigator.push(context,MaterialPageRoute(builder: (context) => StudentDetilas(storedocs: storedocs,),));
+                                  Navigator.push(context,MaterialPageRoute(builder: (context) => StudentDetilas(storedocs: storedocs)));
                               },
                               child: Slidable(
                                 startActionPane: ActionPane(
@@ -380,4 +461,5 @@ class _RespactedloginState extends State<Student_Listing> {
 
     );
   }
+
 }
