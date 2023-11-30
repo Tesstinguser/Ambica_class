@@ -18,11 +18,9 @@ class _AddState extends State<EditProfile> {
 
   // Updaing Student
   CollectionReference students = FirebaseFirestore.instance.collection('demo');
-
   Future<void> updateUser(id, name , email, number , adrresline1 , adrresline2 , adrresline3 ,city , zipcode , state , country) {
     return students
-        .doc(id)
-        .update({
+        .doc(id).update({
       'name': name,
       'email': email,
       'number' : number,

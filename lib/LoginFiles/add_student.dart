@@ -2,34 +2,30 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
-
+import 'package:untitled1/LoginFiles/student_listing.dart';
 class AddandEditScreen extends StatefulWidget {
   const AddandEditScreen({super.key});
-
   @override
   State<AddandEditScreen> createState() => _AddState();
 }
-
 const double width = 300.0;
 const double height = 56.0;
 const double loginAlign = -1;
 const double signInAlign = 1;
 const Color selectedColor = Colors.white;
 const Color normalColor = Colors.black54;
-
 class _AddState extends State<AddandEditScreen> {
   late double xAlign;
   late Color loginColor;
   late Color signInColor;
-
   @override
   void initState() {
     super.initState();
@@ -37,7 +33,6 @@ class _AddState extends State<AddandEditScreen> {
     loginColor = selectedColor;
     signInColor = normalColor;
   }
-
   final _formKey = GlobalKey<FormState>();
   var studensname = "";
   var branch = "";
@@ -66,6 +61,7 @@ class _AddState extends State<AddandEditScreen> {
   var sgoccupations = "";
   var sgemail = "";
   var sgnumber = "";
+  File? studentimage;
 
   final studensnamecontroller = TextEditingController();
   final branchnamecontroller = TextEditingController();
@@ -174,7 +170,6 @@ class _AddState extends State<AddandEditScreen> {
 // Adding Student
 //   CollectionReference org = FirebaseFirestore.instance.collection('org');
   DocumentReference org = FirebaseFirestore.instance.collection('demo').doc();
-
   Future<void> addUser() {
     return org
         .set({
@@ -205,18 +200,28 @@ class _AddState extends State<AddandEditScreen> {
           'sgoccupations': sgoccupations,
           'sgemail': sgemail,
           'sgnumber': sgnumber,
-
+          'image': studentimage,
         })
         .then((value) => print('User Added'))
         .catchError((error) => print('Failed to Add user: $error'));
   }
-
-
-  firebase_storage.FirebaseStorage storage =
-      firebase_storage.FirebaseStorage.instance;
+  // Future<String> uploadImageToStorage() async {
+  //   // Get a reference to the Firebase Storage bucket
+  //   firebase_storage.Reference storageRef =
+  //   firebase_storage.FirebaseStorage.instance.ref().child('images');
+  //
+  //   // Upload the image file to Firebase Storage
+  //   firebase_storage.UploadTask uploadTask = storageRef.child('image.jpg').putFile(imageFile);
+  //
+  //   // Wait for the upload to complete and get the download URL
+  //   firebase_storage.TaskSnapshot taskSnapshot = await uploadTask;
+  //   String imageUrl = await taskSnapshot.ref.getDownloadURL();
+  //
+  //   return imageUrl;
+  // }
+  firebase_storage.FirebaseStorage storage = firebase_storage.FirebaseStorage.instance;
   File? _photo;
   final ImagePicker _picker = ImagePicker();
-
   Future imgFromGallery() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
@@ -229,10 +234,8 @@ class _AddState extends State<AddandEditScreen> {
       }
     });
   }
-
   Future imgFromCamera() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.camera);
-
     setState(() {
       if (pickedFile != null) {
         _photo = File(pickedFile.path);
@@ -242,24 +245,183 @@ class _AddState extends State<AddandEditScreen> {
       }
     });
   }
-
-  Future uploadFile() async {
-    if (_photo == null) return;
-    final fileName = basename(_photo!.path);
-    final destination = 'studnetsimages/$fileName';
-    try {
-      final ref = firebase_storage.FirebaseStorage.instance
-          .ref(destination)
-          .child('images/');
-      await ref.putFile(_photo!);
-    } catch (e) {
-      print('error occured');
-      Fluttertoast.showToast(msg: e.toString());
+    Future uploadFile() async {
+      if (_photo == null) return;
+      final fileName = basename(_photo!.path);
+      final destination = 'demoimage/$fileName';
+      try {
+        final ref = firebase_storage.FirebaseStorage.instance
+            .ref(destination)
+            .child('images/');
+        await ref.putFile(_photo!);
+      } catch (e) {
+        print('error occured');
+        Fluttertoast.showToast(msg: e.toString());
+      }
     }
+    // Future<void> uploadFile() async {
+    //   if (_photo == null) return;
+    //   final fileName = basename(_photo!.path);
+    //   final destination = 'studentimages/$fileName';
+    //   try {
+    //     final ref = firebase_storage.FirebaseStorage.instance.ref(destination);
+    //     final uploadTask = ref.putFile(_photo!);
+    //     final snapshot = await uploadTask.whenComplete(() => null);
+    //     final imageUrl = await snapshot.ref.getDownloadURL();
+    //
+    //     // await FirebaseFirestore.instance.collection('demo').add({
+    //     //       'image_url': imageUrl,
+    //           await FirebaseFirestore.instance.collection('demo').add({
+    //     'image_url': imageUrl ?? '', // Use an empty string as a fallback if imageUrl is null
+    //     });
+    //
+    //   } catch (e) {
+    //     print('Error occurred');
+    //     Fluttertoast.showToast(msg: e.toString());
+    //   }
+    // }
+  // FirebaseStorage storage = FirebaseStorage.instance;
+  // // Select and image from the gallery or take a picture with the camera
+  // // Then upload to Firebase Storage
+  // Future<void> _upload(String inputSource) async {
+  //   final picker = ImagePicker();
+  //   XFile? pickedImage;
+  //   try {
+  //     pickedImage = await picker.pickImage(
+  //         source: inputSource == 'camera'
+  //             ? ImageSource.camera
+  //             : ImageSource.gallery,
+  //         maxWidth: 1920);
+  //
+  //     final String fileName = path.basename(pickedImage!.path);
+  //     File imageFile = File(pickedImage.path);
+  //
+  //     try {
+  //       // Uploading the selected image with some custom meta data
+  //       await storage.ref(fileName).putFile(
+  //           imageFile,
+  //           SettableMetadata(customMetadata: {
+  //             'uploaded_by': 'learners',
+  //             'description': 'learning the hacks'
+  //           }));
+  //
+  //       // Refresh the UI
+  //       setState(() {});
+  //     } on FirebaseException catch (error) {
+  //       if (kDebugMode) {
+  //         print(error);
+  //       }
+  //     }
+  //   } catch (err) {
+  //     if (kDebugMode) {
+  //       print(err);
+  //     }
+  //   }
+  // }
+  //
+  // // Retriew the uploaded images
+  // // This function is called when the app launches for the first time or when an image is uploaded or deleted
+  // Future<List<Map<String, dynamic>>> _loadImages() async {
+  //   List<Map<String, dynamic>> files = [];
+  //
+  //   final ListResult result = await storage.ref().list();
+  //   final List<Reference> allFiles = result.items;
+  //
+  //   await Future.forEach<Reference>(allFiles, (file) async {
+  //     final String fileUrl = await file.getDownloadURL();
+  //     final FullMetadata fileMeta = await file.getMetadata();
+  //     files.add({
+  //       "url": fileUrl,
+  //       "path": file.fullPath,
+  //       "uploaded_by": fileMeta.customMetadata?['uploaded_by'] ?? 'Nobody',
+  //       "description":
+  //       fileMeta.customMetadata?['description'] ?? 'No description'
+  //     });
+  //   });
+  //
+  //   return files;
+  // }
+  //
+  // // Delete the selected image
+  // // This function is called when a trash icon is pressed
+  // Future<void> _delete(String ref) async {
+  //   await storage.ref(ref).delete();
+  //   // Rebuild the UI
+  //   setState(() {});
+  // }
+  //
+  Future<String> getImageUrls(String imagePath) async {
+    Reference ref = FirebaseStorage.instance.ref().child(imagePath);
+    String downloadURL = await ref.getDownloadURL();
+    return downloadURL;
+  }
+//crud with ai
+  Future<void> _upload(String inputSource) async {
+    final picker = ImagePicker();
+    XFile? pickedImage;
+    try {
+      pickedImage = await picker.pickImage(
+          source: inputSource == 'camera'
+              ? ImageSource.camera
+              : ImageSource.gallery,
+          maxWidth: 1920);
+
+      final String fileName = path.basename(pickedImage!.path);
+      File imageFile = File(pickedImage.path);
+
+      try {
+// Uploading the selected image with some custom meta data
+        await storage.ref(fileName).putFile(
+          imageFile,
+        );
+
+// Refresh the UI
+        setState(() {});
+      } on FirebaseException catch (error) {
+        if (kDebugMode) {
+          print(error);
+        }
+      }
+    } catch (err) {
+      if (kDebugMode) {
+        print(err);
+      }
+    }
+  }
+// Retriew the uploaded images
+// This function is called when the app launches for the first time or when an image is uploaded or deleted
+  Future<List<Map<String, dynamic>>> _loadImages() async {
+    List<Map<String, dynamic>> files = [];
+
+    final ListResult result = await storage.ref().list();
+    final List<Reference> allFiles = result.items;
+
+    await Future.forEach<Reference>(allFiles, (file) async {
+      final String fileUrl = await file.getDownloadURL();
+      final FullMetadata fileMeta = await file.getMetadata();
+      files.add({
+        "url": fileUrl,
+        "path": file.fullPath,
+        "uploaded_by": fileMeta.customMetadata?['uploaded_by'] ?? 'Nobody',
+        "description":
+        fileMeta.customMetadata?['description'] ?? 'No description'
+      });
+    });
+
+    return files;
+  }
+
+// Delete the selected image
+// This function is called when a trash icon is pressed
+  Future<void> _delete(String ref) async {
+    await storage.ref(ref).delete();
+// Rebuild the UI
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Color(0xff454283),
       body: SafeArea(
@@ -281,11 +443,9 @@ class _AddState extends State<AddandEditScreen> {
                             },
                             icon: Icon(
                               Icons.arrow_back,
-                              color: Colors.white,
-                            )),
+                              color: Colors.white,)),
                         Text("Add Students",
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 20)),
+                            style: TextStyle(color: Colors.white, fontSize: 20)),
                       ],
                     ),
                   ),
@@ -391,21 +551,65 @@ class _AddState extends State<AddandEditScreen> {
                                     _showPicker(context);
                                     // myAlert();
                                   },
+
+                                  // child:FutureBuilder(
+                                  //   future: _loadImages(),
+                                  //   builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                                  //     if (snapshot.connectionState == ConnectionState.done) {
+                                  //       return ListView.builder(
+                                  //         itemCount: snapshot.data?.length ?? 0,
+                                  //         itemBuilder: (context, index) {
+                                  //           final Map<String, dynamic> image = snapshot.data![index];
+                                  //
+                                  //           return Card(
+                                  //             margin: const EdgeInsets.symmetric(vertical: 10),
+                                  //             child: ListTile(
+                                  //               dense: false,
+                                  //               leading: Image.network(image['url']),
+                                  //               trailing: IconButton(
+                                  //                 onPressed: () => _delete(image['path']),
+                                  //                 icon: const Icon(
+                                  //                   Icons.delete,
+                                  //                   color: Colors.red,
+                                  //                 ),
+                                  //               ),
+                                  //             ),
+                                  //           );
+                                  //         },
+                                  //       );
+                                  //     } else {
+                                  //       // Return a placeholder widget or an empty container when the future is not done
+                                  //       return CircularProgressIndicator();
+                                  //     }
+                                  //   },
+                                  // ),
+
                                   child: _photo != null
-                                      ? Container(
-                                          margin: EdgeInsets.only(top: 7),
-                                          child: Image.file(
-                                            File(_photo!.path),
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.14,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.14,
-                                            fit: BoxFit.cover,
-                                          ))
+                                      ?  Expanded(
+                                    child: FutureBuilder(
+                                      future: _loadImages(),
+                                      builder: (context,
+                                          AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                                        if (snapshot.connectionState == ConnectionState.done) {
+                                          return Expanded(
+                                            child: ListView.builder(
+                                              itemCount: snapshot.data?.length ?? 0,
+                                              itemBuilder: (context, index) {
+                                                final Map<String, dynamic> image =
+                                                snapshot.data![index];
+                                                   Image.network(image['url'],height: 50,width: 50,);
+                                                  // title: Text(image['uploaded_by']),
+                                                  // subtitle: Text(image['description']),
+                                              },
+                                            ),
+                                          );
+                                        }
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      },
+                                    ),
+                                  )
                                       : Align(
                                           alignment: Alignment.topLeft,
                                           child: Padding(
@@ -414,6 +618,31 @@ class _AddState extends State<AddandEditScreen> {
                                             child: Text("Select image",
                                                 textAlign: TextAlign.end),
                                           )),
+
+
+                                  // child: _photo != null
+                                  //     ? Container(
+                                  //         margin: EdgeInsets.only(top: 7),
+                                  //         child: Image.file(
+                                  //           File(_photo!.path),
+                                  //           width: MediaQuery.of(context)
+                                  //                   .size
+                                  //                   .height *
+                                  //               0.14,
+                                  //           height: MediaQuery.of(context)
+                                  //                   .size
+                                  //                   .height *
+                                  //               0.14,
+                                  //           fit: BoxFit.cover,
+                                  //         ))
+                                  //     : Align(
+                                  //         alignment: Alignment.topLeft,
+                                  //         child: Padding(
+                                  //           padding:
+                                  //               const EdgeInsets.only(top: 50),
+                                  //           child: Text("Select image",
+                                  //               textAlign: TextAlign.end),
+                                  //         )),
                                   // child: Image.asset(
                                   //   'assets/Images/cameraimg.png',
                                   //   width: MediaQuery.of(context).size.height *
@@ -782,6 +1011,7 @@ class _AddState extends State<AddandEditScreen> {
                                   SizedBox(height: 17),
                                   Align(
                                     alignment: Alignment.topLeft,
+
                                     child: Padding(
                                       padding: const EdgeInsets.only(left: 15),
                                       child: Text(
@@ -952,7 +1182,7 @@ class _AddState extends State<AddandEditScreen> {
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .width *
-                                                  0.36,
+                                                  0.32,
                                               child: Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
@@ -1025,14 +1255,19 @@ class _AddState extends State<AddandEditScreen> {
                                                       sgemailcontroller.text;
                                                   sgnumber =
                                                       sgnumbercontroller.text;
-
                                                   addUser();
                                                   clearText();
                                                   Fluttertoast.showToast(
                                                       msg: 'Data Insertesd');
-                                                  //
+                                                 //
                                                 });
                                               }
+                                              // Navigator.push(
+                                              //   context,
+                                              //   MaterialPageRoute(
+                                              //     builder: (context) => Student_Listing(imagePath: imageUrl),
+                                              //   ),
+                                              // );
                                             },
                                             style: ButtonStyle(
                                                 backgroundColor:
@@ -1046,10 +1281,7 @@ class _AddState extends State<AddandEditScreen> {
                                                                     30)))),
                                             child: Container(
                                               height: 60,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.37,
+                                              width: MediaQuery.of(context).size.width *0.33,
                                               child: const Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
@@ -1092,14 +1324,16 @@ class _AddState extends State<AddandEditScreen> {
                     leading: const Icon(Icons.photo_library),
                     title: const Text('Gallery'),
                     onTap: () {
-                      imgFromGallery();
+                      // imgFromGallery();
+                      _upload('gallery');
                       Navigator.of(context).pop();
                     }),
                 ListTile(
                   leading: const Icon(Icons.photo_camera),
                   title: const Text('Camera'),
                   onTap: () {
-                    imgFromCamera();
+                    _upload('camera');
+                    // imgFromCamera();
                     Navigator.of(context).pop();
                   },
                 ),

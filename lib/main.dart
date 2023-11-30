@@ -7,6 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'LoginFiles/login_screen.dart';
 import 'LoginFiles/student_listing.dart';
 import 'LoginFiles/veryfy_orgcode.dart';
+import 'Unusalbefile/crudimage.dart';
+import 'Unusalbefile/imagefirebses.dart';
+import 'Unusalbefile/imagestoredata.dart';
 import 'Unusalbefile/login.dart';
 
 Future<void> main() async {
@@ -24,7 +27,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -33,8 +35,11 @@ class MyApp extends StatelessWidget {
        // home: LoginPage(),
       // home: LoginScreen(),
       home: Student_Listing(),
-      //  home: veryfycode(),
+      // home: cbcrud(),
+
+       // home: demo(),
+      //  home: StudentDetailsPage(studentId: '1',),
     );
   }
 }
-  // https://youtu.be/rBnxI6udmXQ?si=WsGil3cJAvnzmZ9N
+  //chttps://youtu.be/rBnxI6udmXQ?si=WsGil3cJAvnzmZ9N
