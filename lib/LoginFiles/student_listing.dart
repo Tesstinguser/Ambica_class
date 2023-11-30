@@ -84,6 +84,7 @@ class _RespactedloginState extends State<Student_Listing> {
     print("aaa${displaylist.length}");
     setState(() {});
   }
+
   // Future<String> getImageUrls(String imagePath) async {
   //   Reference ref = FirebaseStorage.instance.ref().child(imagePath);
   //   String downloadURL = await ref.getDownloadURL();
@@ -94,6 +95,7 @@ class _RespactedloginState extends State<Student_Listing> {
   void initState() {
     super.initState();
   }
+
   // Future<void> getImageUrlyou() async {
   //   try {
   //     String url = await FirebaseStorage.instance.ref().child('studentimages').getDownloadURL();
@@ -113,6 +115,7 @@ class _RespactedloginState extends State<Student_Listing> {
   //   }
   // }
   FirebaseStorage storage = FirebaseStorage.instance;
+
   Future<List<Map<String, dynamic>>> _loadImages() async {
     List<Map<String, dynamic>> files = [];
     final ListResult result = await storage.ref().list();
@@ -127,7 +130,7 @@ class _RespactedloginState extends State<Student_Listing> {
         "description":
             fileMeta.customMetadata?['description'] ?? 'No description'
       });
-      await file.delete();// delete firebse dtorage
+      await file.delete(); // delete firebse dtorage
     });
     return files;
   }
