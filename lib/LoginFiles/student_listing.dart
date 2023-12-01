@@ -130,20 +130,20 @@ class _RespactedloginState extends State<Student_Listing> {
         "description":
             fileMeta.customMetadata?['description'] ?? 'No description'
       });
-      await file.delete(); // delete firebse dtorage
+      // await file.delete(); // delete firebse dtorage
     });
     return files;
   }
-  Future<void> deleteFile() async {
-    try {
-      final storageRef = FirebaseStorage.instance.ref().child('demoimage');
-      await storageRef.delete();
-      print('File deleted successfully');
-    } catch (e) {
-      Fluttertoast.showToast(msg: e.toString());
-      print('Error deleting file: $e');
-    }
-  }
+  //   Future<void> deleteFile() async {
+  //   try {
+  //     final storageRef = FirebaseStorage.instance.ref().child('demoimage');
+  //     await storageRef.delete();
+  //     print('File deleted successfully');
+  //   } catch (e) {
+  //     Fluttertoast.showToast(msg: e.toString());
+  //     print('Error deleting file: $e');
+  //   }
+  // }
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -158,6 +158,7 @@ class _RespactedloginState extends State<Student_Listing> {
             );
           }
           storedocs.clear();
+
           if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
             snapshot.data!.docs.map((DocumentSnapshot document) {
               Map a = document.data() as Map<String, dynamic>;
@@ -375,8 +376,7 @@ class _RespactedloginState extends State<Student_Listing> {
                                                         snapshot.data ?? [];
                                                     if (images.isNotEmpty) {
                                                       Map<String, dynamic>
-                                                          image = images[
-                                                              index]; // Accessing the first image in the array
+                                                          image = images[index]; // Accessing the first image in the array
                                                       return Image.network(
                                                         image['url'],
                                                         width: 75,
