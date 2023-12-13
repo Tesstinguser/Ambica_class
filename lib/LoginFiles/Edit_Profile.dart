@@ -36,9 +36,6 @@ class _AddState extends State<EditProfile> {
         .catchError((error) => print("Failed to update user: $error"));
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -413,7 +410,7 @@ class _AddState extends State<EditProfile> {
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width *
-                                                0.33,
+                                                0.30,
                                             child: Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
@@ -445,7 +442,7 @@ class _AddState extends State<EditProfile> {
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width *
-                                                0.35,
+                                                0.33,
                                             child: InkWell(
                                               onTap: () {
                                                 if (_formKey.currentState!.validate()) {

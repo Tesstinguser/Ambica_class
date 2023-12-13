@@ -306,7 +306,8 @@ class _imagetestingState extends State<LoginScreen> {
                           checkIfExists();
                           }
                              },
-                     child: Text("Get Code")),
+                     child: Text("Get Code",style: TextStyle(color: Colors.white)
+                       ,)),
               )
             ],
           ),

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -61,7 +62,8 @@ class _AddState extends State<AddandEditScreen> {
   var sgoccupations = "";
   var sgemail = "";
   var sgnumber = "";
-  File? studentimage;
+  File? imageUrl;
+
 
   final studensnamecontroller = TextEditingController();
   final branchnamecontroller = TextEditingController();
@@ -169,8 +171,10 @@ class _AddState extends State<AddandEditScreen> {
 //   }
 // Adding Student
 //   CollectionReference org = FirebaseFirestore.instance.collection('org');
+
   DocumentReference org = FirebaseFirestore.instance.collection('demo').doc();
-  Future<void> addUser() {
+  Future<void> addUser() async {
+    String imageUrl = await uploadFile();
     return org
         .set({
           'name': studensname,
@@ -200,11 +204,22 @@ class _AddState extends State<AddandEditScreen> {
           'sgoccupations': sgoccupations,
           'sgemail': sgemail,
           'sgnumber': sgnumber,
-          'image': studentimage,
+          'sgimage': imageUrl,
         })
         .then((value) => print('User Added'))
         .catchError((error) => print('Failed to Add user: $error'));
   }
+
+
+  // Future<String> uploadImage(File imageFile) async {
+  //   FirebaseStorage storage = FirebaseStorage.instance;
+  //   Reference ref = storage.ref().child('images/${DateTime.now().toString()}');
+  //   UploadTask uploadTask = ref.putFile(imageFile);
+  //   TaskSnapshot snapshot = await uploadTask;
+  //   String downloadUrl = await snapshot.ref.getDownloadURL();
+  //   return downloadUrl; // Returning the URL of the uploaded image
+  // }
+
   // Future<String> uploadImageToStorage() async {
   //   // Get a reference to the Firebase Storage bucket
   //   firebase_storage.Reference storageRef =
@@ -227,8 +242,8 @@ class _AddState extends State<AddandEditScreen> {
 
     setState(() {
       if (pickedFile != null) {
-        _photo = File(pickedFile.path);
-        uploadFile();
+        imageUrl = File(pickedFile.path);
+        uploadImage();
       } else {
         print('No image selected.');
       }
@@ -238,22 +253,40 @@ class _AddState extends State<AddandEditScreen> {
     final pickedFile = await _picker.pickImage(source: ImageSource.camera);
     setState(() {
       if (pickedFile != null) {
-        _photo = File(pickedFile.path);
-        uploadFile();
+        imageUrl = File(pickedFile.path);
+        uploadImage();
       } else {
         print('No image selected.');
       }
     });
   }
+
+
+  Future<void> uploadImage() async {
+    // Read the image file
+    String? imagePath = imageUrl?.path;
+    final bytes = File(imagePath!).readAsBytesSync();
+
+    // Encode image file to base64
+    final String base64Image = base64Encode(bytes);
+
+    // Create a Firestore document reference
+    final CollectionReference imagesCollection =
+    FirebaseFirestore.instance.collection('images');
+
+    // Add the base64 encoded image to Firestore
+    await imagesCollection.add({'demo': base64Image});
+  }
+    //  DocumentReference org = FirebaseFirestore.instance.collection('demo').doc();
     Future uploadFile() async {
-      if (_photo == null) return;
-      final fileName = basename(_photo!.path);
+      if (imageUrl == null) return;
+      final fileName = basename(imageUrl!.path);
       final destination = 'demoimage/$fileName';
       try {
         final ref = firebase_storage.FirebaseStorage.instance
             .ref(destination)
             .child('images/');
-        await ref.putFile(_photo!);
+        await ref.putFile(imageUrl!);
       } catch (e) {
         print('error occured');
         Fluttertoast.showToast(msg: e.toString());
@@ -418,7 +451,7 @@ class _AddState extends State<AddandEditScreen> {
 // Rebuild the UI
     setState(() {});
   }
-
+  String selectedValue = '';
   @override
   Widget build(BuildContext context) {
 
@@ -475,7 +508,7 @@ class _AddState extends State<AddandEditScreen> {
                             ),
                             child: Stack(
                               children: [
-                                AnimatedAlign(
+                            AnimatedAlign(
                                   alignment: Alignment(xAlign, 0),
                                   duration: Duration(milliseconds: 300),
                                   child: Container(
@@ -497,6 +530,7 @@ class _AddState extends State<AddandEditScreen> {
                                       xAlign = loginAlign;
                                       loginColor = selectedColor;
                                       signInColor = normalColor;
+                                      selectedValue = 'For Inquiry';
                                     });
                                   },
                                   child: Align(
@@ -521,6 +555,7 @@ class _AddState extends State<AddandEditScreen> {
                                       xAlign = signInAlign;
                                       signInColor = selectedColor;
                                       loginColor = normalColor;
+                                      selectedValue = 'For Admission';
                                     });
                                   },
                                   child: Align(
@@ -539,7 +574,13 @@ class _AddState extends State<AddandEditScreen> {
                                     ),
                                   ),
                                 ),
+                    // Text(
+                    //   'Selected Value: $selectedValue',
+                    //   style: TextStyle(
+                    //     fontWeight: FontWeight.bold,
+                    //   )),
                               ],
+
                             ),
                           ),
                           Stack(
@@ -551,7 +592,6 @@ class _AddState extends State<AddandEditScreen> {
                                     _showPicker(context);
                                     // myAlert();
                                   },
-
                                   // child:FutureBuilder(
                                   //   future: _loadImages(),
                                   //   builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
@@ -583,58 +623,33 @@ class _AddState extends State<AddandEditScreen> {
                                   //     }
                                   //   },
                                   // ),
-
-                                  child: _photo != null
-                                      ?  Expanded(
-                                    child: FutureBuilder(
-                                      future: _loadImages(),
-                                      builder: (context,
-                                          AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-                                        if (snapshot.connectionState == ConnectionState.done) {
-                                          return Expanded(
-                                            child: ListView.builder(
-                                              itemCount: snapshot.data?.length ?? 0,
-                                              itemBuilder: (context, index) {
-                                                final Map<String, dynamic> image =
-                                                snapshot.data![index];
-                                                   Image.network(image['url'],height: 50,width: 50,);
-                                                  // title: Text(image['uploaded_by']),
-                                                  // subtitle: Text(image['description']),
-                                              },
-                                            ),
-                                          );
-                                        }
-                                        return const Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      },
-                                    ),
-                                  )
-                                      : Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 50),
-                                            child: Text("Select image",
-                                                textAlign: TextAlign.end),
-                                          )),
-
-
+                                  //
                                   // child: _photo != null
-                                  //     ? Container(
-                                  //         margin: EdgeInsets.only(top: 7),
-                                  //         child: Image.file(
-                                  //           File(_photo!.path),
-                                  //           width: MediaQuery.of(context)
-                                  //                   .size
-                                  //                   .height *
-                                  //               0.14,
-                                  //           height: MediaQuery.of(context)
-                                  //                   .size
-                                  //                   .height *
-                                  //               0.14,
-                                  //           fit: BoxFit.cover,
-                                  //         ))
+                                  //     ?  Expanded(
+                                  //   child: FutureBuilder(
+                                  //     future: _loadImages(),
+                                  //     builder: (context,
+                                  //         AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                                  //       if (snapshot.connectionState == ConnectionState.done) {
+                                  //         return Expanded(
+                                  //           child: ListView.builder(
+                                  //             itemCount: snapshot.data?.length ?? 0,
+                                  //             itemBuilder: (context, index) {
+                                  //               final Map<String, dynamic> image =
+                                  //               snapshot.data![index];
+                                  //                  Image.network(image['url'],height: 50,width: 50,);
+                                  //                 // title: Text(image['uploaded_by']),
+                                  //                 // subtitle: Text(image['description']),
+                                  //             },
+                                  //           ),
+                                  //         );
+                                  //       }
+                                  //       return const Center(
+                                  //         child: CircularProgressIndicator(),
+                                  //       );
+                                  //     },
+                                  //   ),
+                                  // )
                                   //     : Align(
                                   //         alignment: Alignment.topLeft,
                                   //         child: Padding(
@@ -643,6 +658,28 @@ class _AddState extends State<AddandEditScreen> {
                                   //           child: Text("Select image",
                                   //               textAlign: TextAlign.end),
                                   //         )),
+                                  child: imageUrl != null? Container(
+                                          margin: EdgeInsets.only(top: 7),
+                                          child: Image.file(
+                                            File(imageUrl!.path),
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.14,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.14,
+                                            fit: BoxFit.cover,
+                                          ))
+                                      : Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 50),
+                                            child: Text("Select image",
+                                                textAlign: TextAlign.end),
+                                          )),
                                   // child: Image.asset(
                                   //   'assets/Images/cameraimg.png',
                                   //   width: MediaQuery.of(context).size.height *
@@ -826,7 +863,7 @@ class _AddState extends State<AddandEditScreen> {
                                               hintText: 'Zip code',
                                               labelText: 'Zip code',
                                             ),
-                                            keyboardType: TextInputType.text,
+                                            keyboardType: TextInputType.number,
                                           ),
                                         ),
                                       ),
@@ -1179,18 +1216,15 @@ class _AddState extends State<AddandEditScreen> {
                                                                     30)))),
                                             child: Container(
                                               height: 60,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.32,
+                                              width: MediaQuery.of(context).size.width *0.32,
                                               child: Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
                                                 children: [
-                                                  Icon(Icons.close),
-                                                  Text('Cancel')
+                                                  Icon(Icons.close,color: Colors.white,),
+                                                  Text('Cancel',style: TextStyle(color: Colors.white),)
                                                 ],
                                               ),
                                             )),
@@ -1255,12 +1289,14 @@ class _AddState extends State<AddandEditScreen> {
                                                       sgemailcontroller.text;
                                                   sgnumber =
                                                       sgnumbercontroller.text;
+
                                                   addUser();
                                                   clearText();
                                                   Fluttertoast.showToast(
                                                       msg: 'Data Insertesd');
-                                                 //
-                                                });
+                                                  Navigator.pop(context,selectedValue);
+                                                  Fluttertoast.showToast(msg: 'youhave select$selectedValue');
+                                                  });
                                               }
                                               // Navigator.push(
                                               //   context,
@@ -1271,14 +1307,8 @@ class _AddState extends State<AddandEditScreen> {
                                             },
                                             style: ButtonStyle(
                                                 backgroundColor:
-                                                    MaterialStatePropertyAll(
-                                                        Color(0xff454283)),
-                                                shape: MaterialStatePropertyAll(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                                    30)))),
+                                                    MaterialStatePropertyAll(Color(0xff454283)),
+                                                shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius:BorderRadius.circular(30)))),
                                             child: Container(
                                               height: 60,
                                               width: MediaQuery.of(context).size.width *0.33,
@@ -1288,8 +1318,8 @@ class _AddState extends State<AddandEditScreen> {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
                                                 children: [
-                                                  Icon(Icons.add),
-                                                  Text('Save')
+                                                  Icon(Icons.add,color: Colors.white,),
+                                                  Text('Save',style: TextStyle(color: Colors.white),)
                                                 ],
                                               ),
                                             )),
@@ -1324,16 +1354,18 @@ class _AddState extends State<AddandEditScreen> {
                     leading: const Icon(Icons.photo_library),
                     title: const Text('Gallery'),
                     onTap: () {
-                      // imgFromGallery();
-                      _upload('gallery');
+                      imgFromGallery();
+                      // _upload('gallery');
                       Navigator.of(context).pop();
                     }),
                 ListTile(
                   leading: const Icon(Icons.photo_camera),
                   title: const Text('Camera'),
                   onTap: () {
-                    _upload('camera');
-                    // imgFromCamera();
+
+                    // _upload('camera');
+                    imgFromCamera();
+                    // imgFromCamera();se
                     Navigator.of(context).pop();
                   },
                 ),

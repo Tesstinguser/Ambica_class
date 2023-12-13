@@ -18,7 +18,7 @@ class Student_Listing extends StatefulWidget {
 
 class _RespactedloginState extends State<Student_Listing> {
   final Stream<QuerySnapshot> studentsStream =
-      FirebaseFirestore.instance.collection('demo').snapshots();
+  FirebaseFirestore.instance.collection('demo').snapshots();
   List displaylist = [];
   final List storedocs = [];
 
@@ -128,7 +128,7 @@ class _RespactedloginState extends State<Student_Listing> {
         "path": file.fullPath,
         "uploaded_by": fileMeta.customMetadata?['uploaded_by'] ?? 'Nobody',
         "description":
-            fileMeta.customMetadata?['description'] ?? 'No description'
+        fileMeta.customMetadata?['description'] ?? 'No description'
       });
       // await file.delete(); // delete firebse dtorage
     });
@@ -252,7 +252,7 @@ class _RespactedloginState extends State<Student_Listing> {
                             child: Container(
                                 padding: EdgeInsets.only(right: 20, top: 35),
                                 child:
-                                    Image.asset("assets/Images/Vector.png"))),
+                                Image.asset("assets/Images/Vector.png"))),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -273,7 +273,7 @@ class _RespactedloginState extends State<Student_Listing> {
                               decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
+                                  BorderRadius.all(Radius.circular(20))),
                               child: TextField(
                                 onChanged: (value) {
                                   searchfunction(value);
@@ -307,7 +307,7 @@ class _RespactedloginState extends State<Student_Listing> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => StudentDetilas(
-                                            storedocs: storedocs)));
+                                            storedocs: displaylist)));
                               },
                               child: Slidable(
                                 startActionPane: ActionPane(
@@ -353,67 +353,68 @@ class _RespactedloginState extends State<Student_Listing> {
                                             SizedBox(height: 5),
                                             Center(
                                                 child: ClipOval(
-                                              // child: Image.network(imageUrlst!),
-                                              //   child: Image.asset(
-                                              //   'assets/Images/userimg.png',
-                                              //   width: 75,
-                                              //   height: 75,
-                                              //   fit: BoxFit.cover,
-                                              // ),
-                                              child: FutureBuilder(
-                                                future: _loadImages(),
-                                                builder: (context,
-                                                    AsyncSnapshot<
-                                                            List<
-                                                                Map<String,
-                                                                    dynamic>>>
-                                                        snapshot) {
-                                                  if (snapshot
-                                                          .connectionState ==
-                                                      ConnectionState.done) {
-                                                    List<Map<String, dynamic>>
-                                                        images =
-                                                        snapshot.data ?? [];
-                                                    if (images.isNotEmpty) {
-                                                      Map<String, dynamic>
-                                                          image = images[index]; // Accessing the first image in the array
-                                                      return Image.network(
-                                                        image['url'],
-                                                        width: 75,
-                                                        height: 75,
-                                                      );
-                                                    }
-                                                    // return Column(
-                                                    //   children:
-                                                    //       images.map((image) {
-                                                    //     return Image.network(
-                                                    //       image['url'],
-                                                    //       width: 75,
-                                                    //       height: 75,
-                                                    //     );
-                                                    //   }).toList(),
-                                                    // );
-                                                  }
-                                                  return const Center(
-                                                    child:
-                                                        CircularProgressIndicator(),
-                                                  );
-                                                },
-                                              ),
-                                            )),
+
+                                                  // child: Image.network(imageUrlst!),
+                                                    child: Image.asset(
+                                                    'assets/Images/userimg.png',
+                                                    width: 75,
+                                                    height: 75,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                  // child: FutureBuilder(
+                                                  //   future: _loadImages(),
+                                                  //   builder: (context,
+                                                  //       AsyncSnapshot<
+                                                  //           List<
+                                                  //               Map<String,
+                                                  //                   dynamic>>>
+                                                  //       snapshot) {
+                                                  //     if (snapshot
+                                                  //         .connectionState ==
+                                                  //         ConnectionState.done) {
+                                                  //       List<Map<String, dynamic>>
+                                                  //       images =
+                                                  //           snapshot.data ?? [];
+                                                  //       if (images.isNotEmpty) {
+                                                  //         Map<String, dynamic>
+                                                  //         image = images[index]; // Accessing the first image in the array
+                                                  //         return Image.network(
+                                                  //           image['url'],
+                                                  //           width: 75,
+                                                  //           height: 75,
+                                                  //         );
+                                                  //       }
+                                                  //       // return Column(
+                                                  //       //   children:
+                                                  //       //       images.map((image) {
+                                                  //       //     return Image.network(
+                                                  //       //       image['url'],
+                                                  //       //       width: 75,
+                                                  //       //       height: 75,
+                                                  //       //     );
+                                                  //       //   }).toList(),
+                                                  //       // );
+                                                  //     }
+                                                  //     return const Center(
+                                                  //       child:
+                                                  //       CircularProgressIndicator(),
+                                                  //     );
+                                                  //   },
+                                                  // ),
+                                                )),
                                             SizedBox(height: 5),
                                             Container(
                                                 margin: EdgeInsets.only(
                                                     left: 10, right: 10),
                                                 decoration: BoxDecoration(
                                                     borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                10)),
+                                                    BorderRadius.all(
+                                                        Radius.circular(
+                                                            10)),
                                                     color: Colors.green),
                                                 child: Padding(
                                                   padding:
-                                                      const EdgeInsets.all(8.0),
+                                                  const EdgeInsets.all(8.0),
                                                   child: Text("Addmision"),
                                                 )),
                                             SizedBox(height: 5),
@@ -447,17 +448,17 @@ class _RespactedloginState extends State<Student_Listing> {
                                                 children: [
                                                   Align(
                                                     alignment:
-                                                        Alignment.topRight,
+                                                    Alignment.topRight,
                                                     child: Card(
                                                         margin: EdgeInsets.only(
                                                             top: 25, right: 10),
                                                         elevation: 11,
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
-                                                                BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            30))),
+                                                            BorderRadius
+                                                                .all(Radius
+                                                                .circular(
+                                                                30))),
                                                         child: IconButton(
                                                             onPressed: () {},
                                                             icon: Icon(
@@ -466,7 +467,7 @@ class _RespactedloginState extends State<Student_Listing> {
                                                   ),
                                                   Align(
                                                     alignment:
-                                                        Alignment.topRight,
+                                                    Alignment.topRight,
                                                     child: Card(
                                                         margin: EdgeInsets.only(
                                                             right: 10,
@@ -475,10 +476,10 @@ class _RespactedloginState extends State<Student_Listing> {
                                                         elevation: 11,
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius:
-                                                                BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            30))),
+                                                            BorderRadius
+                                                                .all(Radius
+                                                                .circular(
+                                                                30))),
                                                         child: IconButton(
                                                             onPressed: () {},
                                                             icon: Icon(Icons
@@ -490,20 +491,20 @@ class _RespactedloginState extends State<Student_Listing> {
                                                 margin: EdgeInsets.only(top: 7),
                                                 child: Column(
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment.start,
+                                                  MainAxisAlignment.start,
                                                   crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.start,
                                                   children: [
                                                     // for (var i = 0; i < storedocs.length; i++)
                                                     Text(
                                                         displaylist[index]
-                                                            ['name'],
+                                                        ['name'],
                                                         style: TextStyle(
                                                             color: Colors.black,
                                                             fontSize: 16,
                                                             fontWeight:
-                                                                FontWeight
-                                                                    .bold),
+                                                            FontWeight
+                                                                .bold),
                                                         maxLines: 1,
                                                         overflow: TextOverflow
                                                             .ellipsis),
@@ -516,20 +517,20 @@ class _RespactedloginState extends State<Student_Listing> {
                                                               color: Color(
                                                                   0xff666565),
                                                               fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
+                                                              FontWeight
+                                                                  .bold,
                                                               fontSize: 15),
                                                         ),
                                                         SizedBox(width: 5),
                                                         Text(
                                                             storedocs[index]
-                                                                ['number'],
+                                                            ['number'],
                                                             style: TextStyle(
                                                                 color: Color(
                                                                     0xff454283),
                                                                 fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                                FontWeight
+                                                                    .bold,
                                                                 fontSize: 15)),
                                                       ],
                                                     ),
@@ -542,20 +543,20 @@ class _RespactedloginState extends State<Student_Listing> {
                                                               color: Color(
                                                                   0xff666565),
                                                               fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
+                                                              FontWeight
+                                                                  .bold,
                                                               fontSize: 15),
                                                         ),
                                                         SizedBox(width: 5),
                                                         Text(
                                                             displaylist[index]
-                                                                ['branch'],
+                                                            ['branch'],
                                                             style: TextStyle(
                                                                 color: Color(
                                                                     0xff454283),
                                                                 fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                                FontWeight
+                                                                    .bold,
                                                                 fontSize: 15),
                                                             maxLines: 1),
                                                       ],
@@ -563,7 +564,7 @@ class _RespactedloginState extends State<Student_Listing> {
                                                     SizedBox(height: 5),
                                                     Row(
                                                       mainAxisSize:
-                                                          MainAxisSize.min,
+                                                      MainAxisSize.min,
                                                       children: [
                                                         Text(
                                                           'Sem :',
@@ -571,20 +572,20 @@ class _RespactedloginState extends State<Student_Listing> {
                                                               color: Color(
                                                                   0xff666565),
                                                               fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
+                                                              FontWeight
+                                                                  .bold,
                                                               fontSize: 16),
                                                         ),
                                                         SizedBox(width: 5),
                                                         Text(
                                                             displaylist[index]
-                                                                ['sem'],
+                                                            ['sem'],
                                                             style: TextStyle(
                                                                 color: Color(
                                                                     0xff454283),
                                                                 fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                                FontWeight
+                                                                    .bold,
                                                                 fontSize: 15),
                                                             maxLines: 1),
                                                         SizedBox(width: 5),
@@ -593,19 +594,19 @@ class _RespactedloginState extends State<Student_Listing> {
                                                                 color: Color(
                                                                     0xff666565),
                                                                 fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                                FontWeight
+                                                                    .bold,
                                                                 fontSize: 15)),
                                                         SizedBox(width: 5),
                                                         Text(
                                                             displaylist[index]
-                                                                ['year'],
+                                                            ['year'],
                                                             style: TextStyle(
                                                                 color: Color(
                                                                     0xff454283),
                                                                 fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                                FontWeight
+                                                                    .bold,
                                                                 fontSize: 15),
                                                             maxLines: 1),
                                                       ],
@@ -613,13 +614,13 @@ class _RespactedloginState extends State<Student_Listing> {
                                                     SizedBox(height: 5),
                                                     Text(
                                                       displaylist[index]
-                                                          ['clg/uni'
-                                                              ''],
+                                                      ['clg/uni'
+                                                          ''],
                                                       style: TextStyle(
                                                         color:
-                                                            Color(0xff454283),
+                                                        Color(0xff454283),
                                                         fontWeight:
-                                                            FontWeight.bold,
+                                                        FontWeight.bold,
                                                         fontSize: 15,
                                                       ),
                                                       maxLines: 1,
