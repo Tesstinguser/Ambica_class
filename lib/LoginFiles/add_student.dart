@@ -194,7 +194,7 @@ class _AddState extends State<AddandEditScreen> {
   DocumentReference org = FirebaseFirestore.instance.collection('org').doc('orgdetails').collection('students').doc();
 
   Future<void> addUser() async {
-    String imageUrl = await uploadImage();
+    // String imageUrl = await uploadImage();
     return org
         .set({
           'name': studensname,
