@@ -1,5 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
+import 'dart:convert';
+
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -12,21 +13,26 @@ import 'package:path/path.dart' as path;
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:untitled1/LoginFiles/student_listing.dart';
+
 class AddandEditScreen extends StatefulWidget {
   const AddandEditScreen({super.key});
+
   @override
   State<AddandEditScreen> createState() => _AddState();
 }
+
 const double width = 300.0;
 const double height = 56.0;
 const double loginAlign = -1;
 const double signInAlign = 1;
 const Color selectedColor = Colors.white;
 const Color normalColor = Colors.black54;
+
 class _AddState extends State<AddandEditScreen> {
   late double xAlign;
   late Color loginColor;
   late Color signInColor;
+
   @override
   void initState() {
     super.initState();
@@ -34,6 +40,7 @@ class _AddState extends State<AddandEditScreen> {
     loginColor = selectedColor;
     signInColor = normalColor;
   }
+
   final _formKey = GlobalKey<FormState>();
   var studensname = "";
   var branch = "";
@@ -63,7 +70,6 @@ class _AddState extends State<AddandEditScreen> {
   var sgemail = "";
   var sgnumber = "";
   File? imageUrl;
-
 
   final studensnamecontroller = TextEditingController();
   final branchnamecontroller = TextEditingController();
@@ -172,9 +178,23 @@ class _AddState extends State<AddandEditScreen> {
 // Adding Student
 //   CollectionReference org = FirebaseFirestore.instance.collection('org');
 
-  DocumentReference org = FirebaseFirestore.instance.collection('demo').doc();
+  // DocumentReference org = FirebaseFirestore.instance.collection('org').doc().collection('studnets').doc();
+
+// Get a reference to the 'demo' collection
+//   CollectionReference demoCollection = firestore.collection('demo');
+//
+// // Get a specific document within the 'demo' collection
+//   DocumentReference specificDemoDocument = demoCollection.doc('documentID');
+//
+// // Access the 'students' sub-collection for that specific document
+//   CollectionReference studentsCollection = specificDemoDocument.collection('students');
+// Now you can work with the 'students' collection for that specific 'demo' document
+//   DocumentReference org = FirebaseFirestore.instance.collection('demo').doc();
+
+  DocumentReference org = FirebaseFirestore.instance.collection('org').doc('orgdetails').collection('students').doc();
+
   Future<void> addUser() async {
-    String imageUrl = await uploadFile();
+    String imageUrl = await uploadImage();
     return org
         .set({
           'name': studensname,
@@ -210,19 +230,18 @@ class _AddState extends State<AddandEditScreen> {
         .catchError((error) => print('Failed to Add user: $error'));
   }
 
-
-  // Future<String> uploadImage(File imageFile) async {
-  //   FirebaseStorage storage = FirebaseStorage.instance;
-  //   Reference ref = storage.ref().child('images/${DateTime.now().toString()}');
-  //   UploadTask uploadTask = ref.putFile(imageFile);
-  //   TaskSnapshot snapshot = await uploadTask;
-  //   String downloadUrl = await snapshot.ref.getDownloadURL();
-  //   return downloadUrl; // Returning the URL of the uploaded image
-  // }
+  Future<String> uploadImage() async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    Reference ref = storage.ref().child('images/${DateTime.now().toString()}');
+    UploadTask uploadTask = ref.putFile(imageUrl!);
+    TaskSnapshot snapshot = await uploadTask;
+    String downloadUrl = await snapshot.ref.getDownloadURL();
+    return downloadUrl; // Returning the URL of the uploaded image
+  }
 
   // Future<String> uploadImageToStorage() async {
   //   // Get a reference to the Firebase Storage bucket
-  //   firebase_storage.Reference storageRef =
+  //   firebase_storage.Reference storageRef =  `
   //   firebase_storage.FirebaseStorage.instance.ref().child('images');
   //
   //   // Upload the image file to Firebase Storage
@@ -234,85 +253,88 @@ class _AddState extends State<AddandEditScreen> {
   //
   //   return imageUrl;
   // }
-  firebase_storage.FirebaseStorage storage = firebase_storage.FirebaseStorage.instance;
   File? _photo;
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
   final ImagePicker _picker = ImagePicker();
+
   Future imgFromGallery() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       if (pickedFile != null) {
         imageUrl = File(pickedFile.path);
-        uploadImage();
+        uploadFile();
       } else {
         print('No image selected.');
       }
     });
   }
+
   Future imgFromCamera() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.camera);
     setState(() {
       if (pickedFile != null) {
         imageUrl = File(pickedFile.path);
-        uploadImage();
+        uploadFile();
       } else {
         print('No image selected.');
       }
     });
   }
 
-
-  Future<void> uploadImage() async {
-    // Read the image file
-    String? imagePath = imageUrl?.path;
-    final bytes = File(imagePath!).readAsBytesSync();
-
-    // Encode image file to base64
-    final String base64Image = base64Encode(bytes);
-
-    // Create a Firestore document reference
-    final CollectionReference imagesCollection =
-    FirebaseFirestore.instance.collection('images');
-
-    // Add the base64 encoded image to Firestore
-    await imagesCollection.add({'demo': base64Image});
-  }
-    //  DocumentReference org = FirebaseFirestore.instance.collection('demo').doc();
-    Future uploadFile() async {
-      if (imageUrl == null) return;
-      final fileName = basename(imageUrl!.path);
-      final destination = 'demoimage/$fileName';
-      try {
-        final ref = firebase_storage.FirebaseStorage.instance
-            .ref(destination)
-            .child('images/');
-        await ref.putFile(imageUrl!);
-      } catch (e) {
-        print('error occured');
-        Fluttertoast.showToast(msg: e.toString());
-      }
+  // Future<void> uploadImage() async {
+  //   // Read the image file
+  //   String? imagePath = imageUrl?.path;
+  //   final bytes = File(imagePath!).readAsBytesSync();
+  //
+  //   // Encode image file to base64
+  //   final String base64Image = base64Encode(bytes);
+  //
+  //   // Create a Firestore document reference
+  //   final CollectionReference imagesCollection =
+  //   FirebaseFirestore.instance.collection('images');
+  //
+  //   // Add the base64 encoded image to Firestore
+  //   await imagesCollection.add({'demo': base64Image});
+  // }
+  //  DocumentReference org = FirebaseFirestore.instance.collection('demo').doc();
+  Future uploadFile() async {
+    if (imageUrl == null) return;
+    final fileName = basename(imageUrl!.path);
+    final destination = 'demoimage/$fileName';
+    try {
+      final ref = firebase_storage.FirebaseStorage.instance
+          .ref(destination)
+          .child('images/');
+      await ref.putFile(imageUrl!);
+    } catch (e) {
+      print('error occured');
+      Fluttertoast.showToast(msg: e.toString());
     }
-    // Future<void> uploadFile() async {
-    //   if (_photo == null) return;
-    //   final fileName = basename(_photo!.path);
-    //   final destination = 'studentimages/$fileName';
-    //   try {
-    //     final ref = firebase_storage.FirebaseStorage.instance.ref(destination);
-    //     final uploadTask = ref.putFile(_photo!);
-    //     final snapshot = await uploadTask.whenComplete(() => null);
-    //     final imageUrl = await snapshot.ref.getDownloadURL();
-    //
-    //     // await FirebaseFirestore.instance.collection('demo').add({
-    //     //       'image_url': imageUrl,
-    //           await FirebaseFirestore.instance.collection('demo').add({
-    //     'image_url': imageUrl ?? '', // Use an empty string as a fallback if imageUrl is null
-    //     });
-    //
-    //   } catch (e) {
-    //     print('Error occurred');
-    //     Fluttertoast.showToast(msg: e.toString());
-    //   }
-    // }
+  }
+
+  // Future<void> uploadFile() async {
+  //   if (_photo == null) return;
+  //   final fileName = basename(_photo!.path);
+  //   final destination = 'studentimages/$fileName';
+  //   try {
+  //     final ref = firebase_storage.FirebaseStorage.instance.ref(destination);
+  //     final uploadTask = ref.putFile(_photo!);
+  //     final snapshot = await uploadTask.whenComplete(() => null);
+  //     final imageUrl = await snapshot.ref.getDownloadURL();
+  //
+  //     // await FirebaseFirestore.instance.collection('demo').add({
+  //     //       'image_url': imageUrl,
+  //           await FirebaseFirestore.instance.collection('demo').add({
+  //     'image_url': imageUrl ?? '', // Use an empty string as a fallback if imageUrl is null
+  //     });
+  //
+  //   } catch (e) {
+  //     print('Error occurred');
+  //     Fluttertoast.showToast(msg: e.toString());
+  //   }
+  // }
   // FirebaseStorage storage = FirebaseStorage.instance;
   // // Select and image from the gallery or take a picture with the camera
   // // Then upload to Firebase Storage
@@ -388,6 +410,7 @@ class _AddState extends State<AddandEditScreen> {
     String downloadURL = await ref.getDownloadURL();
     return downloadURL;
   }
+
 //crud with ai
   Future<void> _upload(String inputSource) async {
     final picker = ImagePicker();
@@ -405,8 +428,8 @@ class _AddState extends State<AddandEditScreen> {
       try {
 // Uploading the selected image with some custom meta data
         await storage.ref(fileName).putFile(
-          imageFile,
-        );
+              imageFile,
+            );
 
 // Refresh the UI
         setState(() {});
@@ -421,6 +444,7 @@ class _AddState extends State<AddandEditScreen> {
       }
     }
   }
+
 // Retriew the uploaded images
 // This function is called when the app launches for the first time or when an image is uploaded or deleted
   Future<List<Map<String, dynamic>>> _loadImages() async {
@@ -437,7 +461,7 @@ class _AddState extends State<AddandEditScreen> {
         "path": file.fullPath,
         "uploaded_by": fileMeta.customMetadata?['uploaded_by'] ?? 'Nobody',
         "description":
-        fileMeta.customMetadata?['description'] ?? 'No description'
+            fileMeta.customMetadata?['description'] ?? 'No description'
       });
     });
 
@@ -451,10 +475,11 @@ class _AddState extends State<AddandEditScreen> {
 // Rebuild the UI
     setState(() {});
   }
+
   String selectedValue = '';
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Color(0xff454283),
       body: SafeArea(
@@ -476,9 +501,11 @@ class _AddState extends State<AddandEditScreen> {
                             },
                             icon: Icon(
                               Icons.arrow_back,
-                              color: Colors.white,)),
+                              color: Colors.white,
+                            )),
                         Text("Add Students",
-                            style: TextStyle(color: Colors.white, fontSize: 20)),
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 20)),
                       ],
                     ),
                   ),
@@ -508,7 +535,7 @@ class _AddState extends State<AddandEditScreen> {
                             ),
                             child: Stack(
                               children: [
-                            AnimatedAlign(
+                                AnimatedAlign(
                                   alignment: Alignment(xAlign, 0),
                                   duration: Duration(milliseconds: 300),
                                   child: Container(
@@ -574,13 +601,12 @@ class _AddState extends State<AddandEditScreen> {
                                     ),
                                   ),
                                 ),
-                    // Text(
-                    //   'Selected Value: $selectedValue',
-                    //   style: TextStyle(
-                    //     fontWeight: FontWeight.bold,
-                    //   )),
+                                // Text(
+                                //   'Selected Value: $selectedValue',
+                                //   style: TextStyle(
+                                //     fontWeight: FontWeight.bold,
+                                //   )),
                               ],
-
                             ),
                           ),
                           Stack(
@@ -658,19 +684,13 @@ class _AddState extends State<AddandEditScreen> {
                                   //           child: Text("Select image",
                                   //               textAlign: TextAlign.end),
                                   //         )),
-                                  child: imageUrl != null? Container(
+                                  child: imageUrl != null
+                                      ? Container(
                                           margin: EdgeInsets.only(top: 7),
-                                          child: Image.file(
-                                            File(imageUrl!.path),
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.14,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.14,
-                                            fit: BoxFit.cover,
+                                          child: Image.file(File(imageUrl!.path),width: MediaQuery.of(context).size.height *0.14,
+                                          // child: Image.network(imageUrl!.path),width: MediaQuery.of(context).size.height *0.14,
+                                            height: MediaQuery.of(context).size.height *0.14,
+                                            // fit: BoxFit.cover,
                                           ))
                                       : Align(
                                           alignment: Alignment.topLeft,
@@ -1048,7 +1068,6 @@ class _AddState extends State<AddandEditScreen> {
                                   SizedBox(height: 17),
                                   Align(
                                     alignment: Alignment.topLeft,
-
                                     child: Padding(
                                       padding: const EdgeInsets.only(left: 15),
                                       child: Text(
@@ -1216,15 +1235,25 @@ class _AddState extends State<AddandEditScreen> {
                                                                     30)))),
                                             child: Container(
                                               height: 60,
-                                              width: MediaQuery.of(context).size.width *0.32,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.32,
                                               child: Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
                                                 children: [
-                                                  Icon(Icons.close,color: Colors.white,),
-                                                  Text('Cancel',style: TextStyle(color: Colors.white),)
+                                                  Icon(
+                                                    Icons.close,
+                                                    color: Colors.white,
+                                                  ),
+                                                  Text(
+                                                    'Cancel',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  )
                                                 ],
                                               ),
                                             )),
@@ -1248,8 +1277,7 @@ class _AddState extends State<AddandEditScreen> {
                                                   sem = semcontroller.text;
                                                   year = yearcontroller.text;
                                                   email = emailcontroller.text;
-                                                  number =
-                                                      numbercontroller.text;
+                                                  number = numbercontroller.text;
                                                   clg = clgcontroller.text;
                                                   adrresline1 =
                                                       addres1controller.text;
@@ -1289,14 +1317,14 @@ class _AddState extends State<AddandEditScreen> {
                                                       sgemailcontroller.text;
                                                   sgnumber =
                                                       sgnumbercontroller.text;
-
                                                   addUser();
                                                   clearText();
                                                   Fluttertoast.showToast(
                                                       msg: 'Data Insertesd');
-                                                  Navigator.pop(context,selectedValue);
-                                                  Fluttertoast.showToast(msg: 'youhave select$selectedValue');
-                                                  });
+                                                  Navigator.pop(
+                                                      context, selectedValue);
+                                                  // Fluttertoast.showToast(msg: 'youhave select$selectedValue');
+                                                });
                                               }
                                               // Navigator.push(
                                               //   context,
@@ -1307,19 +1335,35 @@ class _AddState extends State<AddandEditScreen> {
                                             },
                                             style: ButtonStyle(
                                                 backgroundColor:
-                                                    MaterialStatePropertyAll(Color(0xff454283)),
-                                                shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius:BorderRadius.circular(30)))),
+                                                    MaterialStatePropertyAll(
+                                                        Color(0xff454283)),
+                                                shape: MaterialStatePropertyAll(
+                                                    RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                                    30)))),
                                             child: Container(
                                               height: 60,
-                                              width: MediaQuery.of(context).size.width *0.33,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.33,
                                               child: const Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
                                                 children: [
-                                                  Icon(Icons.add,color: Colors.white,),
-                                                  Text('Save',style: TextStyle(color: Colors.white),)
+                                                  Icon(
+                                                    Icons.add,
+                                                    color: Colors.white,
+                                                  ),
+                                                  Text(
+                                                    'Save',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  )
                                                 ],
                                               ),
                                             )),
@@ -1362,7 +1406,6 @@ class _AddState extends State<AddandEditScreen> {
                   leading: const Icon(Icons.photo_camera),
                   title: const Text('Camera'),
                   onTap: () {
-
                     // _upload('camera');
                     imgFromCamera();
                     // imgFromCamera();se

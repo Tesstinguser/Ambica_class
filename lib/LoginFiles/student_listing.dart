@@ -17,8 +17,7 @@ class Student_Listing extends StatefulWidget {
 }
 
 class _RespactedloginState extends State<Student_Listing> {
-  final Stream<QuerySnapshot> studentsStream =
-  FirebaseFirestore.instance.collection('demo').snapshots();
+  final Stream<QuerySnapshot> studentsStream =   FirebaseFirestore.instance.collection('org').doc('orgdetails').collection('students').snapshots();
   List displaylist = [];
   final List storedocs = [];
 
@@ -52,7 +51,10 @@ class _RespactedloginState extends State<Student_Listing> {
   //   } else {
   //     arrTempNutritonList.addAll(arrNutritonList);
   //   }
-  // }
+   // }
+
+
+
   searchfunction(var SearchText) {
     if (SearchText.toString().trim().isNotEmpty) {
       List searchResults = [];
@@ -303,11 +305,7 @@ class _RespactedloginState extends State<Student_Listing> {
                             return InkWell(
                               onTap: () {
                                 // for (var i = 0; i < storedocs.length; i++)
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => StudentDetilas(
-                                            storedocs: displaylist)));
+                                // Navigator.push(context,MaterialPageRoute(builder: (context) => StudentDetilas(storedocs: displaylist)));
                               },
                               child: Slidable(
                                 startActionPane: ActionPane(
@@ -336,303 +334,314 @@ class _RespactedloginState extends State<Student_Listing> {
                                     ),
                                   ],
                                 ),
-                                child: Card(
-                                  margin: EdgeInsets.only(
-                                      left: 10, right: 10, bottom: 10),
-                                  elevation: 2,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  color: Colors.white,
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        // color: Colors.green,
-                                        child: Column(
-                                          children: [
-                                            SizedBox(height: 5),
-                                            Center(
-                                                child: ClipOval(
-
-                                                  // child: Image.network(imageUrlst!),
-                                                    child: Image.asset(
-                                                    'assets/Images/userimg.png',
-                                                    width: 75,
-                                                    height: 75,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                  // child: FutureBuilder(
-                                                  //   future: _loadImages(),
-                                                  //   builder: (context,
-                                                  //       AsyncSnapshot<
-                                                  //           List<
-                                                  //               Map<String,
-                                                  //                   dynamic>>>
-                                                  //       snapshot) {
-                                                  //     if (snapshot
-                                                  //         .connectionState ==
-                                                  //         ConnectionState.done) {
-                                                  //       List<Map<String, dynamic>>
-                                                  //       images =
-                                                  //           snapshot.data ?? [];
-                                                  //       if (images.isNotEmpty) {
-                                                  //         Map<String, dynamic>
-                                                  //         image = images[index]; // Accessing the first image in the array
-                                                  //         return Image.network(
-                                                  //           image['url'],
-                                                  //           width: 75,
-                                                  //           height: 75,
-                                                  //         );
-                                                  //       }
-                                                  //       // return Column(
-                                                  //       //   children:
-                                                  //       //       images.map((image) {
-                                                  //       //     return Image.network(
-                                                  //       //       image['url'],
-                                                  //       //       width: 75,
-                                                  //       //       height: 75,
-                                                  //       //     );
-                                                  //       //   }).toList(),
-                                                  //       // );
-                                                  //     }
-                                                  //     return const Center(
-                                                  //       child:
-                                                  //       CircularProgressIndicator(),
-                                                  //     );
-                                                  //   },
-                                                  // ),
-                                                )),
-                                            SizedBox(height: 5),
-                                            Container(
-                                                margin: EdgeInsets.only(
-                                                    left: 10, right: 10),
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                    BorderRadius.all(
-                                                        Radius.circular(
-                                                            10)),
-                                                    color: Colors.green),
-                                                child: Padding(
-                                                  padding:
-                                                  const EdgeInsets.all(8.0),
-                                                  child: Text("Addmision"),
-                                                )),
-                                            SizedBox(height: 5),
-                                            // Container(
-                                            //     margin: EdgeInsets.only(
-                                            //         left: 10, right: 10),
-                                            //     decoration: BoxDecoration(
-                                            //         borderRadius:
-                                            //             BorderRadius.all(
-                                            //                 Radius.circular(
-                                            //                     10)),
-                                            //         color: Colors.green),
-                                            //     child: Padding(
-                                            //       padding:
-                                            //           const EdgeInsets.all(8.0),
-                                            //       child: InkWell(
-                                            //           onTap: () {
-                                            //             deleteFile();
-                                            //           },
-                                            //           child: Text("delete")),
-                                            //     )),
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          margin: EdgeInsets.only(right: 0),
-                                          child: Stack(
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.push(context,MaterialPageRoute(builder: (context) => StudentDetilas(storedocs: displaylist,index:index)));
+                                  },
+                                  child: Card(
+                                    margin: EdgeInsets.only(
+                                        left: 10, right: 10, bottom: 10),
+                                    elevation: 2,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    color: Colors.white,
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          // color: Colors.green,
+                                          child: Column(
                                             children: [
-                                              Column(
-                                                children: [
-                                                  Align(
-                                                    alignment:
-                                                    Alignment.topRight,
-                                                    child: Card(
-                                                        margin: EdgeInsets.only(
-                                                            top: 25, right: 10),
-                                                        elevation: 11,
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius
-                                                                .all(Radius
-                                                                .circular(
-                                                                30))),
-                                                        child: IconButton(
-                                                            onPressed: () {},
-                                                            icon: Icon(
-                                                                CupertinoIcons
-                                                                    .phone_arrow_down_left))),
-                                                  ),
-                                                  Align(
-                                                    alignment:
-                                                    Alignment.topRight,
-                                                    child: Card(
-                                                        margin: EdgeInsets.only(
-                                                            right: 10,
-                                                            bottom: 10,
-                                                            top: 5),
-                                                        elevation: 11,
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                            BorderRadius
-                                                                .all(Radius
-                                                                .circular(
-                                                                30))),
-                                                        child: IconButton(
-                                                            onPressed: () {},
-                                                            icon: Icon(Icons
-                                                                .message_outlined))),
-                                                  ),
-                                                ],
-                                              ),
+                                              SizedBox(height: 5),
+                                              Center(child: ClipOval(
+                                                // displaylist[index]['name'],
+                                                child: displaylist[index]["sgimage"] != null && displaylist[index]["sgimage"].isNotEmpty
+                                                    ? Image.network(
+                                                  displaylist[index]["sgimage"],
+                                                  width: 75,
+                                                  height: 75,
+                                                  fit: BoxFit.cover,
+                                                )
+                                                    : Placeholder(
+                                                  // Placeholder or any other widget to display when sgimage is null or empty
+                                                  fallbackHeight: 75,
+                                                  fallbackWidth: 75,
+                                                ),
+
+                                                // child: Image.network(displaylist[index]["sgimage"],width: 75,height: 75,fit: BoxFit.cover),
+                                                      // child: Image.asset('assets/Images/userimg.png',width: 75,height: 75,fit: BoxFit.cover,),
+                                                    // child: FutureBuilder(
+                                                    //   future: _loadImages(),
+                                                    //   builder: (context,
+                                                    //       AsyncSnapshot<
+                                                    //           List<
+                                                    //               Map<String,
+                                                    //                   dynamic>>>
+                                                    //       snapshot) {
+                                                    //     if (snapshot
+                                                    //         .connectionState ==
+                                                    //         ConnectionState.done) {
+                                                    //       List<Map<String, dynamic>>
+                                                    //       images =
+                                                    //           snapshot.data ?? [];
+                                                    //       if (images.isNotEmpty) {
+                                                    //         Map<String, dynamic>
+                                                    //         image = images[index]; // Accessing the first image in the array
+                                                    //         return Image.network(
+                                                    //           image['url'],
+                                                    //           width: 75,
+                                                    //           height: 75,
+                                                    //         );
+                                                    //       }
+                                                    //       // return Column(
+                                                    //       //   children:
+                                                    //       //       images.map((image) {
+                                                    //       //     return Image.network(
+                                                    //       //       image['url'],
+                                                    //       //       width: 75,
+                                                    //       //       height: 75,
+                                                    //       //     );
+                                                    //       //   }).toList(),
+                                                    //       // );
+                                                    //     }
+                                                    //     return const Center(
+                                                    //       child:
+                                                    //       CircularProgressIndicator(),
+                                                    //     );
+                                                    //   },
+                                                    // ),
+                                                  )),
+                                              SizedBox(height: 5),
                                               Container(
-                                                margin: EdgeInsets.only(top: 7),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                                  margin: EdgeInsets.only(
+                                                      left: 10, right: 10),
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              10)),
+                                                      color: Colors.green),
+                                                  child: Padding(
+                                                    padding:
+                                                    const EdgeInsets.all(8.0),
+                                                    child: Text("Addmision"),
+                                                  )),
+                                              SizedBox(height: 5),
+                                              // Container(
+                                              //     margin: EdgeInsets.only(
+                                              //         left: 10, right: 10),
+                                              //     decoration: BoxDecoration(
+                                              //         borderRadius:
+                                              //             BorderRadius.all(
+                                              //                 Radius.circular(
+                                              //                     10)),
+                                              //         color: Colors.green),
+                                              //     child: Padding(
+                                              //       padding:
+                                              //           const EdgeInsets.all(8.0),
+                                              //       child: InkWell(
+                                              //           onTap: () {
+                                              //             deleteFile();
+                                              //           },
+                                              //           child: Text("delete")),
+                                              //     )),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Container(
+                                            margin: EdgeInsets.only(right: 0),
+                                            child: Stack(
+                                              children: [
+                                                Column(
                                                   children: [
-                                                    // for (var i = 0; i < storedocs.length; i++)
-                                                    Text(
-                                                        displaylist[index]
-                                                        ['name'],
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .bold),
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis),
-                                                    SizedBox(height: 5),
-                                                    Row(
-                                                      children: [
-                                                        Text(
-                                                          'Phone no:',
-                                                          style: TextStyle(
-                                                              color: Color(
-                                                                  0xff666565),
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .bold,
-                                                              fontSize: 15),
-                                                        ),
-                                                        SizedBox(width: 5),
-                                                        Text(
-                                                            storedocs[index]
-                                                            ['number'],
-                                                            style: TextStyle(
-                                                                color: Color(
-                                                                    0xff454283),
-                                                                fontWeight:
-                                                                FontWeight
-                                                                    .bold,
-                                                                fontSize: 15)),
-                                                      ],
+                                                    Align(
+                                                      alignment:
+                                                      Alignment.topRight,
+                                                      child: Card(
+                                                          margin: EdgeInsets.only(
+                                                              top: 25, right: 10),
+                                                          elevation: 11,
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .all(Radius
+                                                                  .circular(
+                                                                  30))),
+                                                          child: IconButton(
+                                                              onPressed: () {},
+                                                              icon: Icon(
+                                                                  CupertinoIcons
+                                                                      .phone_arrow_down_left))),
                                                     ),
-                                                    SizedBox(height: 5),
-                                                    Row(
-                                                      children: [
-                                                        Text(
-                                                          'Branch :',
-                                                          style: TextStyle(
-                                                              color: Color(
-                                                                  0xff666565),
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .bold,
-                                                              fontSize: 15),
-                                                        ),
-                                                        SizedBox(width: 5),
-                                                        Text(
-                                                            displaylist[index]
-                                                            ['branch'],
-                                                            style: TextStyle(
-                                                                color: Color(
-                                                                    0xff454283),
-                                                                fontWeight:
-                                                                FontWeight
-                                                                    .bold,
-                                                                fontSize: 15),
-                                                            maxLines: 1),
-                                                      ],
+                                                    Align(
+                                                      alignment:
+                                                      Alignment.topRight,
+                                                      child: Card(
+                                                          margin: EdgeInsets.only(
+                                                              right: 10,
+                                                              bottom: 10,
+                                                              top: 5),
+                                                          elevation: 11,
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .all(Radius
+                                                                  .circular(
+                                                                  30))),
+                                                          child: IconButton(
+                                                              onPressed: () {},
+                                                              icon: Icon(Icons
+                                                                  .message_outlined))),
                                                     ),
-                                                    SizedBox(height: 5),
-                                                    Row(
-                                                      mainAxisSize:
-                                                      MainAxisSize.min,
-                                                      children: [
-                                                        Text(
-                                                          'Sem :',
+                                                  ],
+                                                ),
+                                                Container(
+                                                  margin: EdgeInsets.only(top: 7),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                    children: [
+                                                      // for (var i = 0; i < storedocs.length; i++)
+                                                      Text(
+                                                          displaylist[index]['name'],
                                                           style: TextStyle(
-                                                              color: Color(
-                                                                  0xff666565),
+                                                              color: Colors.black,
+                                                              fontSize: 16,
                                                               fontWeight:
                                                               FontWeight
-                                                                  .bold,
-                                                              fontSize: 16),
-                                                        ),
-                                                        SizedBox(width: 5),
-                                                        Text(
-                                                            displaylist[index]
-                                                            ['sem'],
-                                                            style: TextStyle(
-                                                                color: Color(
-                                                                    0xff454283),
-                                                                fontWeight:
-                                                                FontWeight
-                                                                    .bold,
-                                                                fontSize: 15),
-                                                            maxLines: 1),
-                                                        SizedBox(width: 5),
-                                                        Text('Year:',
+                                                                  .bold),
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis),
+                                                      SizedBox(height: 5),
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            'Phone no:',
                                                             style: TextStyle(
                                                                 color: Color(
                                                                     0xff666565),
                                                                 fontWeight:
                                                                 FontWeight
                                                                     .bold,
-                                                                fontSize: 15)),
-                                                        SizedBox(width: 5),
-                                                        Text(
-                                                            displaylist[index]
-                                                            ['year'],
+                                                                fontSize: 15),
+                                                          ),
+                                                          SizedBox(width: 5),
+                                                          Text(
+                                                              storedocs[index]
+                                                              ['number'],
+                                                              style: TextStyle(
+                                                                  color: Color(
+                                                                      0xff454283),
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                                  fontSize: 15)),
+                                                        ],
+                                                      ),
+                                                      SizedBox(height: 5),
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            'Branch :',
                                                             style: TextStyle(
                                                                 color: Color(
-                                                                    0xff454283),
+                                                                    0xff666565),
                                                                 fontWeight:
                                                                 FontWeight
                                                                     .bold,
                                                                 fontSize: 15),
-                                                            maxLines: 1),
-                                                      ],
-                                                    ),
-                                                    SizedBox(height: 5),
-                                                    Text(
-                                                      displaylist[index]
-                                                      ['clg/uni'
-                                                          ''],
-                                                      style: TextStyle(
-                                                        color:
-                                                        Color(0xff454283),
-                                                        fontWeight:
-                                                        FontWeight.bold,
-                                                        fontSize: 15,
+                                                          ),
+                                                          SizedBox(width: 5),
+                                                          Text(
+                                                              displaylist[index]
+                                                              ['branch'],
+                                                              style: TextStyle(
+                                                                  color: Color(
+                                                                      0xff454283),
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                                  fontSize: 15),
+                                                              maxLines: 1),
+                                                        ],
                                                       ),
-                                                      maxLines: 1,
-                                                    )
-                                                  ],
+                                                      SizedBox(height: 5),
+                                                      Row(
+                                                        mainAxisSize:
+                                                        MainAxisSize.min,
+                                                        children: [
+                                                          Text(
+                                                            'Sem :',
+                                                            style: TextStyle(
+                                                                color: Color(
+                                                                    0xff666565),
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .bold,
+                                                                fontSize: 16),
+                                                          ),
+                                                          SizedBox(width: 5),
+                                                          Text(
+                                                              displaylist[index]
+                                                              ['sem'],
+                                                              style: TextStyle(
+                                                                  color: Color(
+                                                                      0xff454283),
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                                  fontSize: 15),
+                                                              maxLines: 1),
+                                                          SizedBox(width: 5),
+                                                          Text('Year:',
+                                                              style: TextStyle(
+                                                                  color: Color(
+                                                                      0xff666565),
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                                  fontSize: 15)),
+                                                          SizedBox(width: 5),
+                                                          Text(
+                                                              displaylist[index]
+                                                              ['year'],
+                                                              style: TextStyle(
+                                                                  color: Color(
+                                                                      0xff454283),
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                                  fontSize: 15),
+                                                              maxLines: 1),
+                                                        ],
+                                                      ),
+                                                      SizedBox(height: 5),
+                                                      Text(
+                                                        displaylist[index]
+                                                        ['clg/uni'
+                                                            ''],
+                                                        style: TextStyle(
+                                                          color:
+                                                          Color(0xff454283),
+                                                          fontWeight:
+                                                          FontWeight.bold,
+                                                          fontSize: 15,
+                                                        ),
+                                                        maxLines: 1,
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
