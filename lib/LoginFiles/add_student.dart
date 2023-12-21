@@ -192,9 +192,10 @@ class _AddState extends State<AddandEditScreen> {
 //   DocumentReference org = FirebaseFirestore.instance.collection('demo').doc();
 
   DocumentReference org = FirebaseFirestore.instance.collection('org').doc('orgdetails').collection('students').doc();
-
-  Future<void> addUser() async {
-    // String imageUrl = await uploadImage();
+  // DocumentReference org = FirebaseFirestore.instance.collection('demo').doc();
+  //
+  Future<void> addUser()  async {
+    String imageUrl = await uploadImage();
     return org
         .set({
           'name': studensname,
@@ -231,7 +232,7 @@ class _AddState extends State<AddandEditScreen> {
   }
 
   Future<String> uploadImage() async {
-    FirebaseStorage storage = FirebaseStorage.instance;
+       FirebaseStorage storage = FirebaseStorage.instance;
     Reference ref = storage.ref().child('images/${DateTime.now().toString()}');
     UploadTask uploadTask = ref.putFile(imageUrl!);
     TaskSnapshot snapshot = await uploadTask;
@@ -449,10 +450,8 @@ class _AddState extends State<AddandEditScreen> {
 // This function is called when the app launches for the first time or when an image is uploaded or deleted
   Future<List<Map<String, dynamic>>> _loadImages() async {
     List<Map<String, dynamic>> files = [];
-
     final ListResult result = await storage.ref().list();
     final List<Reference> allFiles = result.items;
-
     await Future.forEach<Reference>(allFiles, (file) async {
       final String fileUrl = await file.getDownloadURL();
       final FullMetadata fileMeta = await file.getMetadata();
@@ -464,10 +463,8 @@ class _AddState extends State<AddandEditScreen> {
             fileMeta.customMetadata?['description'] ?? 'No description'
       });
     });
-
     return files;
   }
-
 // Delete the selected image
 // This function is called when a trash icon is pressed
   Future<void> _delete(String ref) async {
@@ -475,7 +472,6 @@ class _AddState extends State<AddandEditScreen> {
 // Rebuild the UI
     setState(() {});
   }
-
   String selectedValue = '';
 
   @override

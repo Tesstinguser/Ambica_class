@@ -67,17 +67,13 @@ class _imagetestingState extends State<LoginScreen> {
   }
   // Assuming you have a reference to the document
   Future<void> checkIfExists() async {
-
     // DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance.collection('org').doc().get();
-
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('org').where('orgcode', isEqualTo: orgController.text.toString()).get();
     if (querySnapshot.docs.isNotEmpty) {
       print("DATAPRINT=>${querySnapshot.docs[0].id}");
       // Fluttertoast.showToast(msg: 'we send otp as soon');
 
       QuerySnapshot querySnapshotin = await  FirebaseFirestore.instance.collection('org/${querySnapshot.docs[0].id}/users').where('mo_no', isEqualTo: userController.text.toString()).get();
-
-
       if(querySnapshotin.docs.isNotEmpty)
         {
           print("DATAPRINTOK=>${querySnapshotin.docs[0].id}");
@@ -85,18 +81,16 @@ class _imagetestingState extends State<LoginScreen> {
           Navigator.push(context, MaterialPageRoute(builder: (context) => OTPverification(userController.text),));
         }
       else{
-        Fluttertoast.showToast(msg: 'Number is not valid');
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => OTPverification(userController.text),));
+        // Fluttertoast.showToast(msg: 'Number is not valid');
       }
-
-    } else {
+    } else
+    {
       setState(() {
         _exists = false;
       });
       Fluttertoast.showToast(msg: 'org code is invalid');
     }
-
-
-
   }
   //  Future<void> checkIfExists() async {
   //
@@ -200,28 +194,27 @@ class _imagetestingState extends State<LoginScreen> {
                 children: [
                   Container(margin: EdgeInsets.only(left:  25,top: 15),child: Text('we have send you an ',style: TextStyle(fontSize: 14.5),)),
                   Container(margin: EdgeInsets.only(top: 10),child: Text('One Time Password(OTP)',style: TextStyle(color: Color(0xff182035),fontWeight: FontWeight.bold))),
-
                   ],
               ),
                     Container(margin: EdgeInsets.only(left: 25,),alignment: Alignment.topLeft,child: Text('on this number')),
-                    Container(margin: EdgeInsets.only(left: 25,top: 20),alignment: Alignment.topLeft,child: Text('Enter Mobile no.*',)),
-              //       Container(
-              //         decoration: BoxDecoration(
-              //           borderRadius: BorderRadius.all(Radius.circular(10)),border: Border.all(color: Colors.black)
-              //         ),
-              //         margin: EdgeInsets.only(left: MediaQuery.of(context).size.height*0.05,right: 20),
-              //         child: IntlPhoneField(
-              //   controller: userController,
-              //   decoration: InputDecoration(
-              //     labelText: 'Phone Number',
-              //     border: InputBorder.none,
-              //   ),
-              //   initialCountryCode: 'IN',
-              //   onChanged: (phone) {
-              //     phoneNumber = phone.completeNumber;
-              //   },
-              // ),
-              //       ),
+                      // Container(margin: EdgeInsets.only(left: 25,top: 20),alignment: Alignment.topLeft,child: Text('Enter Mobile no.*',)),
+                //       Container(
+                //         decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.all(Radius.circular(10)),border: Border.all(color: Colors.black)
+                //         ),
+                //         margin: EdgeInsets.only(left: MediaQuery.of(context).size.height*0.05,right: 20),
+                //         child: IntlPhoneField(
+                //   controller: userController,
+                //   decoration: InputDecoration(
+                //     labelText: 'Phone Number',
+                //     border: InputBorder.none,
+                //   ),
+                //   initialCountryCode: 'IN',
+                //   onChanged: (phone) {
+                //     phoneNumber = phone.completeNumber;
+                //   },
+                // ),
+                //       ),
               // Row(
               //  children: [
               //     Container(
@@ -284,7 +277,6 @@ class _imagetestingState extends State<LoginScreen> {
                   },
                 ),
               ),
-
               Container(
                 height: MediaQuery.of(context).size.height*0.06,
                 width: double.infinity,
@@ -292,18 +284,22 @@ class _imagetestingState extends State<LoginScreen> {
                 child: ElevatedButton(
                     style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color(0xff555288))),
                     onPressed: () {
-                        if(userController.text.isEmpty){
+                        if(userController.text.isEmpty && orgController.text.isEmpty){
                           Fluttertoast.showToast(msg: "Please enter mobile number");
                           }
+                        else if(userController.text.isNotEmpty && orgController.text.isNotEmpty){
+                          _signInWithPhone(context);
+                          checkIfExists();
+
+                        }
                         else{
                         // Fluttertoast.showToast(msg: 'ok');
-                          // Navigator.push(context, MaterialPageRoute(builder: (context) => OTPverification(userController.text),));
-                          // _signInWithPhone(context);
-                          // isSent
-                          //     ? verifyUser()
-                          //     : registerUser(userController.text, context);
-
-                          checkIfExists();
+                        //   Navigator.push(context, MaterialPageRoute(builder: (context) => OTPverification(userController.text),));
+                        //   _signInWithPhone(context);
+                        //   // isSent
+                        //   //     ? verifyUser()
+                        //   //     : registerUser(userController.text, context);
+                        //   checkIfExists();
                           }
                              },
                      child: Text("Get Code",style: TextStyle(color: Colors.white)

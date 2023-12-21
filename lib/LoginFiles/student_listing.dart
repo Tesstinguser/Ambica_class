@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:untitled1/LoginFiles/student_details.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 // import 'package:untitled1/LoginFiles/students_details.dart';
 import 'add_student.dart';
+
 
 class Student_Listing extends StatefulWidget {
   const Student_Listing({super.key});
@@ -17,9 +18,11 @@ class Student_Listing extends StatefulWidget {
 }
 
 class _RespactedloginState extends State<Student_Listing> {
+  // final Stream<QuerySnapshot> studentsStream =   FirebaseFirestore.instance.collection('demo').snapshots();
   final Stream<QuerySnapshot> studentsStream =   FirebaseFirestore.instance.collection('org').doc('orgdetails').collection('students').snapshots();
   List displaylist = [];
   final List storedocs = [];
+
 
   // Future<String> getImageUrl() async {
   //   final ref = FirebaseStorage.instance.ref().child('studentsimages');
@@ -146,6 +149,8 @@ class _RespactedloginState extends State<Student_Listing> {
   //     print('Error deleting file: $e');
   //   }
   // }
+  String text = '';
+  String link = '';
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -304,6 +309,7 @@ class _RespactedloginState extends State<Student_Listing> {
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: () {
+                                  shareApp();
                                 // for (var i = 0; i < storedocs.length; i++)
                                 // Navigator.push(context,MaterialPageRoute(builder: (context) => StudentDetilas(storedocs: displaylist)));
                               },
@@ -313,7 +319,7 @@ class _RespactedloginState extends State<Student_Listing> {
                                   children: [
                                     SlidableAction(
                                       onPressed: (context) {
-                                        Fluttertoast.showToast(msg: 'ok');
+                                        _makingPhoneCall(displaylist[index]['number'],);
                                       },
                                       backgroundColor: Colors.green,
                                       icon: Icons.call,
@@ -326,8 +332,10 @@ class _RespactedloginState extends State<Student_Listing> {
                                   children: [
                                     SlidableAction(
                                       onPressed: (context) {
-                                        Fluttertoast.showToast(msg: 'share');
-                                      },
+
+                                        // _onShare(context);
+                                        // Fluttertoast.showToast(msg: 'share');
+                                                },
                                       backgroundColor: Colors.orange,
                                       icon: Icons.share,
                                       label: 'Share',
@@ -586,8 +594,7 @@ class _RespactedloginState extends State<Student_Listing> {
                                                           ),
                                                           SizedBox(width: 5),
                                                           Text(
-                                                              displaylist[index]
-                                                              ['sem'],
+                                                              displaylist[index]['sem'],
                                                               style: TextStyle(
                                                                   color: Color(
                                                                       0xff454283),
@@ -659,4 +666,24 @@ class _RespactedloginState extends State<Student_Listing> {
           );
         });
   }
+  _makingPhoneCall(displaylist) async {
+    var url = Uri.parse("tel:$displaylist");
+    // var url = Uri.parse("tel:7622953838");
+    if (await launchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+  Future<void> shareApp() async {
+     final String appLink = 'https://play.google.com/store/apps/details?id=com.example.myapp';
+    final String message = 'it is app link: $appLink';
+    await (title: 'text', text: message, linkUrl: appLink);
+  }
+   // void _onShare(BuildContext context) async {
+   //   final box = context.findRenderObject() as RenderBox?;
+  //   await Share.share(text,subject: link,
+  //       sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
+  //
+  // }
 }
