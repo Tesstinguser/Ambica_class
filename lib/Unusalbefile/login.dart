@@ -1,9 +1,7 @@
 import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
 
 import '../LoginFiles/otp_verification.dart';
 import 'OtpScreen.dart';
@@ -11,7 +9,7 @@ import 'home_page.dart';
 
 
 class LoginPage extends StatefulWidget {
-  LoginPage({super.key});
+  const LoginPage({super.key});
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -25,9 +23,9 @@ class _LoginPageState extends State<LoginPage> {
 
   void _signInWithPhone(BuildContext context) async {
     if (phoneNumber != null && phoneNumber!.isNotEmpty) {
-      final FirebaseAuth _auth = FirebaseAuth.instance;
+      final FirebaseAuth auth = FirebaseAuth.instance;
       try {
-        await _auth.verifyPhoneNumber(
+        await auth.verifyPhoneNumber(
           phoneNumber: phoneNumber!,
           verificationCompleted: (PhoneAuthCredential credential) {
             // Automatic verification completed (only on physical devices).
@@ -180,13 +178,13 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future registerUser(String mobile, BuildContext context) async {
-    FirebaseAuth _auth = FirebaseAuth.instance;
-    _auth.verifyPhoneNumber(
+    FirebaseAuth auth = FirebaseAuth.instance;
+    auth.verifyPhoneNumber(
         phoneNumber: mobile,
-        timeout: Duration(seconds: 60),
+        timeout: const Duration(seconds: 60),
         verificationCompleted: (PhoneAuthCredential authCredential) {
           log('from verificationCompleted');
-          _auth
+          auth
               .signInWithCredential(authCredential)
               .then((UserCredential result) {
             log('from verificationCompleted done');
@@ -221,7 +219,7 @@ class _LoginPageState extends State<LoginPage> {
     print("MOBILESS++>>$verifId");
   }
   verifyUser() async {
-    FirebaseAuth _auth = FirebaseAuth.instance;
+    FirebaseAuth auth = FirebaseAuth.instance;
     // Update the UI - wait for the user to enter the SMS code
     String smsCode = codeController.text.trim();
 
@@ -230,7 +228,7 @@ class _LoginPageState extends State<LoginPage> {
     PhoneAuthProvider.credential(verificationId: verifId, smsCode: smsCode);
 
     // Sign the user in (or link) with the credential
-    await _auth.signInWithCredential(credential).then((UserCredential result) {
+    await auth.signInWithCredential(credential).then((UserCredential result) {
       log('from verificationCompleted done');
       Navigator.pushReplacement(
           context,
@@ -241,7 +239,6 @@ class _LoginPageState extends State<LoginPage> {
       print(e);
       print("MOBILESS++>>$verifId");
     });
-    ;
   }
 
 }

@@ -1,11 +1,12 @@
 
 
 
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 
 class AddandExidScreen extends StatefulWidget {
+  const AddandExidScreen({super.key});
+
   @override
   _ToggleButtonState createState() => _ToggleButtonState();
 }
@@ -34,12 +35,12 @@ class _ToggleButtonState extends State<AddandExidScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Demo'),
+        title: const Text('Demo'),
       ),
       body: Container(
         width: double.infinity,
         height: height,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(topLeft: Radius.circular(19,),topRight: Radius.circular(19)
           ),
@@ -48,11 +49,11 @@ class _ToggleButtonState extends State<AddandExidScreen> {
           children: [
             AnimatedAlign(
               alignment: Alignment(xAlign, 0),
-              duration: Duration(milliseconds: 300),
+              duration: const Duration(milliseconds: 300),
               child: Container(
                 width: width * 0.7,
                 height: height,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color(0xff454283),
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(19,),topRight: Radius.circular(19)
                   ),
@@ -69,7 +70,7 @@ class _ToggleButtonState extends State<AddandExidScreen> {
                 });
               },
               child: Align(
-                alignment: Alignment(-1, 0),
+                alignment: const Alignment(-1, 0),
                 child: Container(
                   width: width * 0.5,
                   color: Colors.transparent,
@@ -94,7 +95,7 @@ class _ToggleButtonState extends State<AddandExidScreen> {
                 });
               },
               child: Align(
-                alignment: Alignment(1, 0),
+                alignment: const Alignment(1, 0),
                 child: Container(
                   width: width * 0.5,
                   color: Colors.transparent,

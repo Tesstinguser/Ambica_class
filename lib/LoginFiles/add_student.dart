@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:convert';
 
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,8 +10,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:path/path.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:untitled1/LoginFiles/student_listing.dart';
 
 class AddandEditScreen extends StatefulWidget {
   const AddandEditScreen({super.key});
@@ -192,9 +189,10 @@ class _AddState extends State<AddandEditScreen> {
 //   DocumentReference org = FirebaseFirestore.instance.collection('demo').doc();
 
   DocumentReference org = FirebaseFirestore.instance.collection('org').doc('orgdetails').collection('students').doc();
-
-  Future<void> addUser() async {
-    // String imageUrl = await uploadImage();
+  // DocumentReference org = FirebaseFirestore.instance.collection('demo').doc();
+  //
+  Future<void> addUser()  async {
+    String imageUrl = await uploadImage();
     return org
         .set({
           'name': studensname,
@@ -231,7 +229,7 @@ class _AddState extends State<AddandEditScreen> {
   }
 
   Future<String> uploadImage() async {
-    FirebaseStorage storage = FirebaseStorage.instance;
+       FirebaseStorage storage = FirebaseStorage.instance;
     Reference ref = storage.ref().child('images/${DateTime.now().toString()}');
     UploadTask uploadTask = ref.putFile(imageUrl!);
     TaskSnapshot snapshot = await uploadTask;
@@ -449,10 +447,8 @@ class _AddState extends State<AddandEditScreen> {
 // This function is called when the app launches for the first time or when an image is uploaded or deleted
   Future<List<Map<String, dynamic>>> _loadImages() async {
     List<Map<String, dynamic>> files = [];
-
     final ListResult result = await storage.ref().list();
     final List<Reference> allFiles = result.items;
-
     await Future.forEach<Reference>(allFiles, (file) async {
       final String fileUrl = await file.getDownloadURL();
       final FullMetadata fileMeta = await file.getMetadata();
@@ -464,10 +460,8 @@ class _AddState extends State<AddandEditScreen> {
             fileMeta.customMetadata?['description'] ?? 'No description'
       });
     });
-
     return files;
   }
-
 // Delete the selected image
 // This function is called when a trash icon is pressed
   Future<void> _delete(String ref) async {
@@ -475,13 +469,12 @@ class _AddState extends State<AddandEditScreen> {
 // Rebuild the UI
     setState(() {});
   }
-
   String selectedValue = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff454283),
+      backgroundColor: const Color(0xff454283),
       body: SafeArea(
           child: SingleChildScrollView(
         child: Form(
@@ -492,18 +485,18 @@ class _AddState extends State<AddandEditScreen> {
                 children: [
                   Container(
                     height: 70,
-                    color: Color(0xff454283),
+                    color: const Color(0xff454283),
                     child: Row(
                       children: [
                         IconButton(
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.arrow_back,
                               color: Colors.white,
                             )),
-                        Text("Add Students",
+                        const Text("Add Students",
                             style:
                                 TextStyle(color: Colors.white, fontSize: 20)),
                       ],
@@ -515,17 +508,17 @@ class _AddState extends State<AddandEditScreen> {
                         bottom: 23),
                     child: Container(
                       width: double.infinity,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(17)),
                           color: Colors.white),
                       child: Column(
                         children: [
                           Container(
                             margin:
-                                EdgeInsets.only(top: 10, left: 10, right: 10),
+                                const EdgeInsets.only(top: 10, left: 10, right: 10),
                             width: double.infinity,
                             height: height,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(
@@ -537,11 +530,11 @@ class _AddState extends State<AddandEditScreen> {
                               children: [
                                 AnimatedAlign(
                                   alignment: Alignment(xAlign, 0),
-                                  duration: Duration(milliseconds: 300),
+                                  duration: const Duration(milliseconds: 300),
                                   child: Container(
                                     width: width * 0.6,
                                     height: height,
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       color: Color(0xff454283),
                                       borderRadius: BorderRadius.only(
                                           topLeft: Radius.circular(
@@ -561,7 +554,7 @@ class _AddState extends State<AddandEditScreen> {
                                     });
                                   },
                                   child: Align(
-                                    alignment: Alignment(-1, 0),
+                                    alignment: const Alignment(-1, 0),
                                     child: Container(
                                       width: width * 0.5,
                                       color: Colors.transparent,
@@ -586,7 +579,7 @@ class _AddState extends State<AddandEditScreen> {
                                     });
                                   },
                                   child: Align(
-                                    alignment: Alignment(1, 0),
+                                    alignment: const Alignment(1, 0),
                                     child: Container(
                                       width: width * 0.5,
                                       color: Colors.transparent,
@@ -612,7 +605,7 @@ class _AddState extends State<AddandEditScreen> {
                           Stack(
                             children: [
                               Padding(
-                                padding: EdgeInsets.only(left: 19, top: 30),
+                                padding: const EdgeInsets.only(left: 19, top: 30),
                                 child: InkWell(
                                   onTap: () {
                                     _showPicker(context);
@@ -686,17 +679,17 @@ class _AddState extends State<AddandEditScreen> {
                                   //         )),
                                   child: imageUrl != null
                                       ? Container(
-                                          margin: EdgeInsets.only(top: 7),
+                                          margin: const EdgeInsets.only(top: 7),
                                           child: Image.file(File(imageUrl!.path),width: MediaQuery.of(context).size.height *0.14,
                                           // child: Image.network(imageUrl!.path),width: MediaQuery.of(context).size.height *0.14,
                                             height: MediaQuery.of(context).size.height *0.14,
                                             // fit: BoxFit.cover,
                                           ))
-                                      : Align(
+                                      : const Align(
                                           alignment: Alignment.topLeft,
                                           child: Padding(
                                             padding:
-                                                const EdgeInsets.only(top: 50),
+                                                EdgeInsets.only(top: 50),
                                             child: Text("Select image",
                                                 textAlign: TextAlign.end),
                                           )),
@@ -712,7 +705,7 @@ class _AddState extends State<AddandEditScreen> {
                               ),
                               Column(
                                 children: [
-                                  SizedBox(height: 17),
+                                  const SizedBox(height: 17),
                                   Container(
                                     margin: EdgeInsets.only(
                                         left:
@@ -726,7 +719,7 @@ class _AddState extends State<AddandEditScreen> {
                                           child: TextField(
                                             controller: studensnamecontroller,
                                             keyboardType: TextInputType.text,
-                                            decoration: InputDecoration(
+                                            decoration: const InputDecoration(
                                               border: OutlineInputBorder(),
                                               hintText: 'Student’s  Name',
                                               labelText: 'Student’s  Name',
@@ -738,7 +731,7 @@ class _AddState extends State<AddandEditScreen> {
                                               left: 23, right: 23, top: 10),
                                           child: TextField(
                                             controller: branchnamecontroller,
-                                            decoration: InputDecoration(
+                                            decoration: const InputDecoration(
                                               border: OutlineInputBorder(),
                                               hintText: 'Student’s  Brach',
                                               labelText: 'Student’s  Branch',
@@ -752,12 +745,12 @@ class _AddState extends State<AddandEditScreen> {
                                     children: [
                                       Flexible(
                                         child: Padding(
-                                          padding: EdgeInsets.only(
+                                          padding: const EdgeInsets.only(
                                               left: 23, right: 3, top: 10),
                                           child: TextField(
                                             keyboardType: TextInputType.phone,
                                             controller: semcontroller,
-                                            decoration: InputDecoration(
+                                            decoration: const InputDecoration(
                                               border: OutlineInputBorder(),
                                               hintText: 'Semester ',
                                               labelText: 'Semester',
@@ -767,12 +760,12 @@ class _AddState extends State<AddandEditScreen> {
                                       ),
                                       Flexible(
                                         child: Padding(
-                                          padding: EdgeInsets.only(
+                                          padding: const EdgeInsets.only(
                                               left: 10, right: 23, top: 10),
                                           child: TextField(
                                             keyboardType: TextInputType.phone,
                                             controller: yearcontroller,
-                                            decoration: InputDecoration(
+                                            decoration: const InputDecoration(
                                               border: OutlineInputBorder(),
                                               hintText: 'Year',
                                               labelText: 'Year',
@@ -788,7 +781,7 @@ class _AddState extends State<AddandEditScreen> {
                                     child: TextField(
                                       keyboardType: TextInputType.emailAddress,
                                       controller: emailcontroller,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText: 'Student’s  Email',
                                         labelText: 'Student’s  Email',
@@ -801,7 +794,7 @@ class _AddState extends State<AddandEditScreen> {
                                     child: TextField(
                                       keyboardType: TextInputType.phone,
                                       controller: numbercontroller,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText: 'Student’s  Number',
                                         labelText: 'Student’s  Number',
@@ -813,7 +806,7 @@ class _AddState extends State<AddandEditScreen> {
                                         left: 23, right: 23, top: 10),
                                     child: TextField(
                                       controller: clgcontroller,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText: 'University/Institute',
                                         labelText: 'University/Institute',
@@ -825,7 +818,7 @@ class _AddState extends State<AddandEditScreen> {
                                         left: 23, right: 23, top: 10),
                                     child: TextField(
                                       controller: addres1controller,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText: 'Student’s Address Line-1 ',
                                         labelText: 'Student’s Address Line-1 ',
@@ -837,7 +830,7 @@ class _AddState extends State<AddandEditScreen> {
                                         left: 23, right: 23, top: 10),
                                     child: TextField(
                                       controller: addres2controller,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText: 'Student’s Address Line-2 ',
                                         labelText: 'Student’s Address Line-2 ',
@@ -849,7 +842,7 @@ class _AddState extends State<AddandEditScreen> {
                                         left: 23, right: 23, top: 10),
                                     child: TextField(
                                       controller: addres3controller,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText: 'Student’s Address Line-3',
                                         labelText: 'Student’s Address Line-3  ',
@@ -860,11 +853,11 @@ class _AddState extends State<AddandEditScreen> {
                                     children: [
                                       Flexible(
                                         child: Padding(
-                                          padding: EdgeInsets.only(
+                                          padding: const EdgeInsets.only(
                                               left: 23, right: 0, top: 10),
                                           child: TextField(
                                             controller: citycontroller,
-                                            decoration: InputDecoration(
+                                            decoration: const InputDecoration(
                                               border: OutlineInputBorder(),
                                               hintText: 'Student’s City ',
                                               labelText: 'Student’s City ',
@@ -874,11 +867,11 @@ class _AddState extends State<AddandEditScreen> {
                                       ),
                                       Flexible(
                                         child: Padding(
-                                          padding: EdgeInsets.only(
+                                          padding: const EdgeInsets.only(
                                               left: 10, right: 23, top: 10),
                                           child: TextField(
                                             controller: zipcodecontroller,
-                                            decoration: InputDecoration(
+                                            decoration: const InputDecoration(
                                               border: OutlineInputBorder(),
                                               hintText: 'Zip code',
                                               labelText: 'Zip code',
@@ -893,11 +886,11 @@ class _AddState extends State<AddandEditScreen> {
                                     children: [
                                       Flexible(
                                         child: Padding(
-                                          padding: EdgeInsets.only(
+                                          padding: const EdgeInsets.only(
                                               left: 23, right: 0, top: 10),
                                           child: TextField(
                                             controller: statecontroller,
-                                            decoration: InputDecoration(
+                                            decoration: const InputDecoration(
                                               border: OutlineInputBorder(),
                                               hintText: 'State ',
                                               labelText: 'State',
@@ -907,11 +900,11 @@ class _AddState extends State<AddandEditScreen> {
                                       ),
                                       Flexible(
                                         child: Padding(
-                                          padding: EdgeInsets.only(
+                                          padding: const EdgeInsets.only(
                                               left: 10, right: 23, top: 10),
                                           child: TextField(
                                             controller: countrycontroller,
-                                            decoration: InputDecoration(
+                                            decoration: const InputDecoration(
                                               border: OutlineInputBorder(),
                                               hintText: 'Country',
                                               labelText: 'Country',
@@ -925,11 +918,11 @@ class _AddState extends State<AddandEditScreen> {
                                     children: [
                                       Flexible(
                                         child: Padding(
-                                          padding: EdgeInsets.only(
+                                          padding: const EdgeInsets.only(
                                               left: 23, right: 0, top: 10),
                                           child: TextField(
                                             controller: subjectscontroller,
-                                            decoration: InputDecoration(
+                                            decoration: const InputDecoration(
                                               border: OutlineInputBorder(),
                                               hintText: 'Subjects ',
                                               labelText: 'Subjects',
@@ -937,7 +930,7 @@ class _AddState extends State<AddandEditScreen> {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 20,
                                         width: 10,
                                       ),
@@ -945,18 +938,18 @@ class _AddState extends State<AddandEditScreen> {
                                           height: 45,
                                           width: 45,
                                           decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
+                                              borderRadius: const BorderRadius.all(
                                                   Radius.circular(30)),
                                               color: Colors.white,
                                               border: Border.all(
                                                   color: Colors.deepPurple,
                                                   width: 2)),
-                                          child: Icon(
+                                          child: const Icon(
                                             CupertinoIcons.add,
                                             size: 25,
                                             color: Colors.deepPurple,
                                           )),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 20,
                                         width: 10,
                                       ),
@@ -964,36 +957,36 @@ class _AddState extends State<AddandEditScreen> {
                                           height: 45,
                                           width: 45,
                                           decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
+                                              borderRadius: const BorderRadius.all(
                                                   Radius.circular(30)),
                                               color: Colors.white,
                                               border: Border.all(
                                                   color: Colors.deepPurple,
                                                   width: 2)),
-                                          child: Icon(
+                                          child: const Icon(
                                             CupertinoIcons.minus,
                                             size: 25,
                                             color: Colors.deepPurple,
                                           )),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 20,
                                         width: 10,
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 17),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
+                                  const SizedBox(height: 17),
+                                  const Padding(
+                                    padding: EdgeInsets.only(
                                         left: 10, right: 10),
                                     child: Divider(
                                       color: Colors.black,
                                     ),
                                   ),
-                                  SizedBox(height: 17),
-                                  Align(
+                                  const SizedBox(height: 17),
+                                  const Align(
                                     alignment: Alignment.topLeft,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(left: 15),
+                                      padding: EdgeInsets.only(left: 15),
                                       child: Text(
                                         "Father Detail’s:",
                                         style: TextStyle(
@@ -1010,7 +1003,7 @@ class _AddState extends State<AddandEditScreen> {
                                         left: 23, right: 23, top: 10),
                                     child: TextField(
                                       controller: sfnamecontroller,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText: 'Student’s Father Name',
                                         labelText: 'Student’s Father Name',
@@ -1023,7 +1016,7 @@ class _AddState extends State<AddandEditScreen> {
                                         left: 23, right: 23, top: 10),
                                     child: TextField(
                                       controller: sfoccupcontroller,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText:
                                             'Student’s Father Occupations',
@@ -1037,7 +1030,7 @@ class _AddState extends State<AddandEditScreen> {
                                         left: 23, right: 23, top: 10),
                                     child: TextField(
                                       controller: sfemailcontroller,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText: 'Student’s Father Email',
                                         labelText: 'Student’s Father Email',
@@ -1049,7 +1042,7 @@ class _AddState extends State<AddandEditScreen> {
                                         left: 23, right: 23, top: 10),
                                     child: TextField(
                                       controller: sfnumbercontroller,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText: 'Student’s Father Number',
                                         labelText: 'Student’s Father Number',
@@ -1057,19 +1050,19 @@ class _AddState extends State<AddandEditScreen> {
                                       keyboardType: TextInputType.number,
                                     ),
                                   ),
-                                  SizedBox(height: 17),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
+                                  const SizedBox(height: 17),
+                                  const Padding(
+                                    padding: EdgeInsets.only(
                                         left: 10, right: 10),
                                     child: Divider(
                                       color: Colors.black,
                                     ),
                                   ),
-                                  SizedBox(height: 17),
-                                  Align(
+                                  const SizedBox(height: 17),
+                                  const Align(
                                     alignment: Alignment.topLeft,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(left: 15),
+                                      padding: EdgeInsets.only(left: 15),
                                       child: Text(
                                         "Mother Detail’s:",
                                         style: TextStyle(
@@ -1086,7 +1079,7 @@ class _AddState extends State<AddandEditScreen> {
                                         left: 23, right: 23, top: 10),
                                     child: TextField(
                                       controller: smnamecontroller,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText: 'Student’s Mother Name',
                                         labelText: 'Student’s Mother Name',
@@ -1098,7 +1091,7 @@ class _AddState extends State<AddandEditScreen> {
                                         left: 23, right: 23, top: 10),
                                     child: TextField(
                                       controller: smoccupcontroller,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText:
                                             'Student’s Mother Occupations',
@@ -1112,7 +1105,7 @@ class _AddState extends State<AddandEditScreen> {
                                         left: 23, right: 23, top: 10),
                                     child: TextField(
                                       controller: smemailcontroller,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText: 'Student’s Mother Email',
                                         labelText: 'Student’s Mother Email',
@@ -1124,7 +1117,7 @@ class _AddState extends State<AddandEditScreen> {
                                         left: 23, right: 23, top: 10),
                                     child: TextField(
                                       controller: smnumbercontroller,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText: 'Student’s Mother Number',
                                         labelText: 'Student’s Mother Number',
@@ -1132,19 +1125,19 @@ class _AddState extends State<AddandEditScreen> {
                                       keyboardType: TextInputType.number,
                                     ),
                                   ),
-                                  SizedBox(height: 17),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
+                                  const SizedBox(height: 17),
+                                  const Padding(
+                                    padding: EdgeInsets.only(
                                         left: 10, right: 10),
                                     child: Divider(
                                       color: Colors.black,
                                     ),
                                   ),
-                                  SizedBox(height: 17),
-                                  Align(
+                                  const SizedBox(height: 17),
+                                  const Align(
                                     alignment: Alignment.topLeft,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(left: 15),
+                                      padding: EdgeInsets.only(left: 15),
                                       child: Text(
                                         "Guardian Detail’s:",
                                         style: TextStyle(
@@ -1161,7 +1154,7 @@ class _AddState extends State<AddandEditScreen> {
                                         left: 23, right: 23, top: 10),
                                     child: TextField(
                                       controller: sgnamecontroller,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText: 'Student’s Guardian Name',
                                         labelText: 'Student’s Guardian Name',
@@ -1173,7 +1166,7 @@ class _AddState extends State<AddandEditScreen> {
                                         left: 23, right: 23, top: 10),
                                     child: TextField(
                                       controller: sgoccupcontroller,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText:
                                             'Student’s Guardian Occupations',
@@ -1187,7 +1180,7 @@ class _AddState extends State<AddandEditScreen> {
                                         left: 23, right: 23, top: 10),
                                     child: TextField(
                                       controller: sgemailcontroller,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText: 'Student’s Guardian Email',
                                         labelText: 'Student’s Guardian Email',
@@ -1199,7 +1192,7 @@ class _AddState extends State<AddandEditScreen> {
                                         left: 23, right: 23, top: 10),
                                     child: TextField(
                                       controller: sgnumbercontroller,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText: 'Student’s Guardian Number',
                                         labelText: 'Student’s Guardian Number',
@@ -1207,7 +1200,7 @@ class _AddState extends State<AddandEditScreen> {
                                       keyboardType: TextInputType.number,
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 10,
                                   ),
                                   Row(
@@ -1225,7 +1218,7 @@ class _AddState extends State<AddandEditScreen> {
                                             onPressed: () {},
                                             style: ButtonStyle(
                                                 backgroundColor:
-                                                    MaterialStatePropertyAll(
+                                                    const MaterialStatePropertyAll(
                                                         Colors.red),
                                                 shape: MaterialStatePropertyAll(
                                                     RoundedRectangleBorder(
@@ -1233,13 +1226,13 @@ class _AddState extends State<AddandEditScreen> {
                                                             BorderRadius
                                                                 .circular(
                                                                     30)))),
-                                            child: Container(
+                                            child: SizedBox(
                                               height: 60,
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .width *
                                                   0.32,
-                                              child: Row(
+                                              child: const Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 crossAxisAlignment:
@@ -1335,7 +1328,7 @@ class _AddState extends State<AddandEditScreen> {
                                             },
                                             style: ButtonStyle(
                                                 backgroundColor:
-                                                    MaterialStatePropertyAll(
+                                                    const MaterialStatePropertyAll(
                                                         Color(0xff454283)),
                                                 shape: MaterialStatePropertyAll(
                                                     RoundedRectangleBorder(
@@ -1343,7 +1336,7 @@ class _AddState extends State<AddandEditScreen> {
                                                             BorderRadius
                                                                 .circular(
                                                                     30)))),
-                                            child: Container(
+                                            child: SizedBox(
                                               height: 60,
                                               width: MediaQuery.of(context)
                                                       .size

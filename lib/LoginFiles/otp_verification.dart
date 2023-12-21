@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
-import 'package:timer_count_down/timer_count_down.dart';
 
 
 import 'student_listing.dart';
@@ -47,31 +45,32 @@ class _TTPverificationState extends State<OTPverification> {
       });
     });
   }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login'),
         centerTitle: true,
-        backgroundColor: Color(0xff454283),
-        leading: Icon(Icons.arrow_back,size: 30),
+        backgroundColor: const Color(0xff454283),
+        leading: const Icon(Icons.arrow_back,size: 30),
       ),
       body: Column(
         children: [
 
           Container(margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.1),
-            child: Align(alignment: Alignment.center,
+            child: const Align(alignment: Alignment.center,
               child: Text("OTP Verification",style: TextStyle(color: Color(0xff182035),fontSize: 25,fontWeight: FontWeight.bold)
 
               ),
             ),
           ),
-          Container(margin: EdgeInsets.only(top: 10,left: 20,right: 20),child: Text('Enter the code from the sms we sent  ',style: TextStyle(fontSize: 18,color: Color(0xff606268)),)),
+          Container(margin: const EdgeInsets.only(top: 10,left: 20,right: 20),child: const Text('Enter the code from the sms we sent  ',style: TextStyle(fontSize: 18,color: Color(0xff606268)),)),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(margin: EdgeInsets.only(top: 5),child: Text('to ',style: TextStyle(fontSize: 18,color: Color(0xff606268)),)),
-              Container(margin: EdgeInsets.only(top: 5),child: Text('+919825985265',style: TextStyle(fontSize: 18,color: Color(0xff182035)),)),
+              Container(margin: const EdgeInsets.only(top: 5),child: const Text('to ',style: TextStyle(fontSize: 18,color: Color(0xff606268)),)),
+              Container(margin: const EdgeInsets.only(top: 5),child: const Text('+919825985265',style: TextStyle(fontSize: 18,color: Color(0xff182035)),)),
             ],
           ),
     //         Countdown(
@@ -83,15 +82,15 @@ class _TTPverificationState extends State<OTPverification> {
     //
     // },
     // ),
-          Container(margin:EdgeInsets.only(top: 10),
-              child: Text("${_duration.inMinutes}:${(_duration.inSeconds % 60).toString().padLeft(2, '0')}",style: TextStyle(fontSize: 17),)),
+          Container(margin:const EdgeInsets.only(top: 10),
+              child: Text("${_duration.inMinutes}:${(_duration.inSeconds % 60).toString().padLeft(2, '0')}",style: const TextStyle(fontSize: 17),)),
           Container(
-            margin: EdgeInsets.only(top: 17),
+            margin: const EdgeInsets.only(top: 17),
             child: Align(
               alignment: Alignment.center,
               child: OtpTextField(
                 numberOfFields: 6,
-                borderColor: Color(0xFF454283),
+                borderColor: const Color(0xFF454283),
                 //set to true to show as box or false to show as dash
                 showFieldAsBox: true,
                 //runs when a code is typed in
@@ -109,9 +108,9 @@ class _TTPverificationState extends State<OTPverification> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(margin: EdgeInsets.only(top: 20)
-                ,child: Text("I didn't receive any code."),),
-              Container(margin: EdgeInsets.only(top: 20),child: Text("RESEND",style: TextStyle(color: Color(0xff454283))),),
+              Container(margin: const EdgeInsets.only(top: 20)
+                ,child: const Text("I didn't receive any code."),),
+              Container(margin: const EdgeInsets.only(top: 20),child: const Text("RESEND",style: TextStyle(color: Color(0xff454283))),),
             ],
           ),
           Align(
@@ -120,10 +119,10 @@ class _TTPverificationState extends State<OTPverification> {
               width: double.infinity,
               margin: EdgeInsets.only(left: 25,right: 20,top: MediaQuery.of(context).size.height*0.4),
               child: ElevatedButton(
-                  style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color(0xff555288))),
+                  style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color(0xff555288))),
                     onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Student_Listing()));
-                  }, child: Text("Submit")),
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Student_Listing()));
+                  }, child: const Text("Submit")),
             ),
           ),
 

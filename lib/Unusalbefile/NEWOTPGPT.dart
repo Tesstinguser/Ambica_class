@@ -11,11 +11,13 @@ class PhoneAuthScreen extends StatelessWidget {
   final TextEditingController _phoneNumberController = TextEditingController();
   String? phoneNumber;
 
+  PhoneAuthScreen({super.key});
+
   void _signInWithPhone(BuildContext context) async {
     if (phoneNumber != null && phoneNumber!.isNotEmpty) {
-      final FirebaseAuth _auth = FirebaseAuth.instance;
+      final FirebaseAuth auth = FirebaseAuth.instance;
       try {
-        await _auth.verifyPhoneNumber(
+        await auth.verifyPhoneNumber(
           phoneNumber: phoneNumber!,
           verificationCompleted: (PhoneAuthCredential credential) {
             // Automatic verification completed (only on physical devices).
@@ -47,7 +49,7 @@ class PhoneAuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Phone Authentication'),
+        title: const Text('Phone Authentication'),
       ),
       body: Center(
         child: Column(
@@ -55,7 +57,7 @@ class PhoneAuthScreen extends StatelessWidget {
           children: <Widget>[
             IntlPhoneField(
               controller: _phoneNumberController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Phone Number',
               ),
               onChanged: (phone) {
@@ -64,7 +66,7 @@ class PhoneAuthScreen extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () => _signInWithPhone(context),
-              child: Text('Verify Phone Number'),
+              child: const Text('Verify Phone Number'),
             ),
           ],
         ),

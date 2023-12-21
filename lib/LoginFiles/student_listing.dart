@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:untitled1/LoginFiles/student_details.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 // import 'package:untitled1/LoginFiles/students_details.dart';
 import 'add_student.dart';
+
 
 class Student_Listing extends StatefulWidget {
   const Student_Listing({super.key});
@@ -17,9 +18,11 @@ class Student_Listing extends StatefulWidget {
 }
 
 class _RespactedloginState extends State<Student_Listing> {
+  // final Stream<QuerySnapshot> studentsStream =   FirebaseFirestore.instance.collection('demo').snapshots();
   final Stream<QuerySnapshot> studentsStream =   FirebaseFirestore.instance.collection('org').doc('orgdetails').collection('students').snapshots();
   List displaylist = [];
   final List storedocs = [];
+
 
   // Future<String> getImageUrl() async {
   //   final ref = FirebaseStorage.instance.ref().child('studentsimages');
@@ -65,13 +68,14 @@ class _RespactedloginState extends State<Student_Listing> {
           searchResults.add(doc);
         }
       }
-      print("Studentsname=>${searchResults}");
+      print("Studentsname=>$searchResults");
       print("Studentsname=>${searchResults.length}");
       if (searchResults.isNotEmpty) {
         Fluttertoast.showToast(
           msg: "Name matched!",
         );
-      } else {
+      }
+      else {
         Fluttertoast.showToast(
           msg: "No name matched!",
         );
@@ -80,8 +84,9 @@ class _RespactedloginState extends State<Student_Listing> {
       }
       displaylist = searchResults;
       // displaylist = storedocs;
-    } else {
-      displaylist = storedocs;
+    }
+    else {
+      displaylist = storedocs   ;
     }
     print("aaa${displaylist.length}");
     setState(() {});
@@ -118,24 +123,24 @@ class _RespactedloginState extends State<Student_Listing> {
   // }
   FirebaseStorage storage = FirebaseStorage.instance;
 
-  Future<List<Map<String, dynamic>>> _loadImages() async {
-    List<Map<String, dynamic>> files = [];
-    final ListResult result = await storage.ref().list();
-    final List<Reference> allFiles = result.items;
-    await Future.forEach<Reference>(allFiles, (file) async {
-      final String fileUrl = await file.getDownloadURL();
-      final FullMetadata fileMeta = await file.getMetadata();
-      files.add({
-        "url": fileUrl,
-        "path": file.fullPath,
-        "uploaded_by": fileMeta.customMetadata?['uploaded_by'] ?? 'Nobody',
-        "description":
-        fileMeta.customMetadata?['description'] ?? 'No description'
-      });
-      // await file.delete(); // delete firebse dtorage
-    });
-    return files;
-  }
+  // Future<List<Map<String, dynamic>>> _loadImages() async {
+  //   List<Map<String, dynamic>> files = [];
+  //   final ListResult result = await storage.ref().list();
+  //   final List<Reference> allFiles = result.items;
+  //   await Future.forEach<Reference>(allFiles, (file) async {
+  //     final String fileUrl = await file.getDownloadURL();
+  //     final FullMetadata fileMeta = await file.getMetadata();
+  //     files.add({
+  //       "url": fileUrl,
+  //       "path": file.fullPath,
+  //       "uploaded_by": fileMeta.customMetadata?['uploaded_by'] ?? 'Nobody',
+  //       "description":
+  //       fileMeta.customMetadata?['description'] ?? 'No description'
+  //     });
+  //     // await file.delete(); // delete firebse dtorage
+  //   });
+  //   return files;
+  // }
   //   Future<void> deleteFile() async {
   //   try {
   //     final storageRef = FirebaseStorage.instance.ref().child('demoimage');
@@ -146,6 +151,8 @@ class _RespactedloginState extends State<Student_Listing> {
   //     print('Error deleting file: $e');
   //   }
   // }
+  String text = '';
+  String link = '';
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -160,7 +167,6 @@ class _RespactedloginState extends State<Student_Listing> {
             );
           }
           storedocs.clear();
-
           if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
             snapshot.data!.docs.map((DocumentSnapshot document) {
               Map a = document.data() as Map<String, dynamic>;
@@ -227,17 +233,17 @@ class _RespactedloginState extends State<Student_Listing> {
           //   }
           // }
           return Scaffold(
-            backgroundColor: Color(0xff454283),
+            backgroundColor: const Color(0xff454283),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
                 // Navigator.push(context,MaterialPageRoute(builder: (context) => ImageUploads()));
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => AddandEditScreen()));
+                        builder: (context) => const AddandEditScreen()));
               },
-              backgroundColor: Color(0xff454283),
-              child: Icon(
+              backgroundColor: const Color(0xff454283),
+              child: const Icon(
                 Icons.add,
                 color: Colors.white,
               ),
@@ -246,20 +252,20 @@ class _RespactedloginState extends State<Student_Listing> {
               child: Column(
                 children: [
                   Container(
-                    color: Color(0xff454283),
+                    color: const Color(0xff454283),
                     child: Stack(
                       children: [
                         Align(
                             alignment: Alignment.topRight,
                             child: Container(
-                                padding: EdgeInsets.only(right: 20, top: 35),
+                                padding: const EdgeInsets.only(right: 20, top: 35),
                                 child:
                                 Image.asset("assets/Images/Vector.png"))),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 25, top: 15),
+                            const Padding(
+                              padding: EdgeInsets.only(left: 25, top: 15),
                               child: Text('Respacted Login',
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 19)),
@@ -272,7 +278,7 @@ class _RespactedloginState extends State<Student_Listing> {
                                   bottom: 15,
                                   right: MediaQuery.of(context).size.height *
                                       0.09),
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                   color: Colors.white,
                                   borderRadius:
                                   BorderRadius.all(Radius.circular(20))),
@@ -280,7 +286,7 @@ class _RespactedloginState extends State<Student_Listing> {
                                 onChanged: (value) {
                                   searchfunction(value);
                                 },
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   border: InputBorder.none,
                                   hintText: 'Search',
                                   prefixIcon: Icon(Icons.search),
@@ -294,16 +300,17 @@ class _RespactedloginState extends State<Student_Listing> {
                   ),
                   Expanded(
                     child: Container(
-                        margin: EdgeInsets.only(top: 10),
+                        margin: const EdgeInsets.only(top: 10),
                         child: ListView.builder(
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
-                          physics: BouncingScrollPhysics(),
+                          physics: const BouncingScrollPhysics(),
                           // itemCount: storedocs.length,
                           itemCount: displaylist.length,
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: () {
+                                  shareApp();
                                 // for (var i = 0; i < storedocs.length; i++)
                                 // Navigator.push(context,MaterialPageRoute(builder: (context) => StudentDetilas(storedocs: displaylist)));
                               },
@@ -313,7 +320,7 @@ class _RespactedloginState extends State<Student_Listing> {
                                   children: [
                                     SlidableAction(
                                       onPressed: (context) {
-                                        Fluttertoast.showToast(msg: 'ok');
+                                        _makingPhoneCall(displaylist[index]['number'],);
                                       },
                                       backgroundColor: Colors.green,
                                       icon: Icons.call,
@@ -326,8 +333,10 @@ class _RespactedloginState extends State<Student_Listing> {
                                   children: [
                                     SlidableAction(
                                       onPressed: (context) {
-                                        Fluttertoast.showToast(msg: 'share');
-                                      },
+
+                                        // _onShare(context);
+                                        // Fluttertoast.showToast(msg: 'share');
+                                                },
                                       backgroundColor: Colors.orange,
                                       icon: Icons.share,
                                       label: 'Share',
@@ -339,10 +348,10 @@ class _RespactedloginState extends State<Student_Listing> {
                                     Navigator.push(context,MaterialPageRoute(builder: (context) => StudentDetilas(storedocs: displaylist,index:index)));
                                   },
                                   child: Card(
-                                    margin: EdgeInsets.only(
+                                    margin: const EdgeInsets.only(
                                         left: 10, right: 10, bottom: 10),
                                     elevation: 2,
-                                    shape: RoundedRectangleBorder(
+                                    shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(10))),
                                     color: Colors.white,
@@ -352,7 +361,7 @@ class _RespactedloginState extends State<Student_Listing> {
                                           // color: Colors.green,
                                           child: Column(
                                             children: [
-                                              SizedBox(height: 5),
+                                              const SizedBox(height: 5),
                                               Center(child: ClipOval(
                                                 // displaylist[index]['name'],
                                                 child: displaylist[index]["sgimage"] != null && displaylist[index]["sgimage"].isNotEmpty
@@ -362,7 +371,7 @@ class _RespactedloginState extends State<Student_Listing> {
                                                   height: 75,
                                                   fit: BoxFit.cover,
                                                 )
-                                                    : Placeholder(
+                                                    : const Placeholder(
                                                   // Placeholder or any other widget to display when sgimage is null or empty
                                                   fallbackHeight: 75,
                                                   fallbackWidth: 75,
@@ -411,22 +420,22 @@ class _RespactedloginState extends State<Student_Listing> {
                                                     //   },
                                                     // ),
                                                   )),
-                                              SizedBox(height: 5),
+                                              const SizedBox(height: 5),
                                               Container(
-                                                  margin: EdgeInsets.only(
+                                                  margin: const EdgeInsets.only(
                                                       left: 10, right: 10),
-                                                  decoration: BoxDecoration(
+                                                  decoration: const BoxDecoration(
                                                       borderRadius:
                                                       BorderRadius.all(
                                                           Radius.circular(
                                                               10)),
                                                       color: Colors.green),
-                                                  child: Padding(
+                                                  child: const Padding(
                                                     padding:
-                                                    const EdgeInsets.all(8.0),
+                                                    EdgeInsets.all(8.0),
                                                     child: Text("Addmision"),
                                                   )),
-                                              SizedBox(height: 5),
+                                              const SizedBox(height: 5),
                                               // Container(
                                               //     margin: EdgeInsets.only(
                                               //         left: 10, right: 10),
@@ -450,7 +459,7 @@ class _RespactedloginState extends State<Student_Listing> {
                                         ),
                                         Expanded(
                                           child: Container(
-                                            margin: EdgeInsets.only(right: 0),
+                                            margin: const EdgeInsets.only(right: 0),
                                             child: Stack(
                                               children: [
                                                 Column(
@@ -459,18 +468,20 @@ class _RespactedloginState extends State<Student_Listing> {
                                                       alignment:
                                                       Alignment.topRight,
                                                       child: Card(
-                                                          margin: EdgeInsets.only(
+                                                          margin: const EdgeInsets.only(
                                                               top: 25, right: 10),
                                                           elevation: 11,
-                                                          shape: RoundedRectangleBorder(
+                                                          shape: const RoundedRectangleBorder(
                                                               borderRadius:
                                                               BorderRadius
                                                                   .all(Radius
                                                                   .circular(
                                                                   30))),
                                                           child: IconButton(
-                                                              onPressed: () {},
-                                                              icon: Icon(
+                                                              onPressed: () {
+                                                                _makingPhoneCallicon(displaylist[index]['number']);
+                                                              },
+                                                              icon: const Icon(
                                                                   CupertinoIcons
                                                                       .phone_arrow_down_left))),
                                                     ),
@@ -478,12 +489,12 @@ class _RespactedloginState extends State<Student_Listing> {
                                                       alignment:
                                                       Alignment.topRight,
                                                       child: Card(
-                                                          margin: EdgeInsets.only(
+                                                          margin: const EdgeInsets.only(
                                                               right: 10,
                                                               bottom: 10,
                                                               top: 5),
                                                           elevation: 11,
-                                                          shape: RoundedRectangleBorder(
+                                                          shape: const RoundedRectangleBorder(
                                                               borderRadius:
                                                               BorderRadius
                                                                   .all(Radius
@@ -491,13 +502,13 @@ class _RespactedloginState extends State<Student_Listing> {
                                                                   30))),
                                                           child: IconButton(
                                                               onPressed: () {},
-                                                              icon: Icon(Icons
+                                                              icon: const Icon(Icons
                                                                   .message_outlined))),
                                                     ),
                                                   ],
                                                 ),
                                                 Container(
-                                                  margin: EdgeInsets.only(top: 7),
+                                                  margin: const EdgeInsets.only(top: 7),
                                                   child: Column(
                                                     mainAxisAlignment:
                                                     MainAxisAlignment.start,
@@ -507,7 +518,7 @@ class _RespactedloginState extends State<Student_Listing> {
                                                       // for (var i = 0; i < storedocs.length; i++)
                                                       Text(
                                                           displaylist[index]['name'],
-                                                          style: TextStyle(
+                                                          style: const TextStyle(
                                                               color: Colors.black,
                                                               fontSize: 16,
                                                               fontWeight:
@@ -516,10 +527,10 @@ class _RespactedloginState extends State<Student_Listing> {
                                                           maxLines: 1,
                                                           overflow: TextOverflow
                                                               .ellipsis),
-                                                      SizedBox(height: 5),
+                                                      const SizedBox(height: 5),
                                                       Row(
                                                         children: [
-                                                          Text(
+                                                          const Text(
                                                             'Phone no:',
                                                             style: TextStyle(
                                                                 color: Color(
@@ -529,11 +540,11 @@ class _RespactedloginState extends State<Student_Listing> {
                                                                     .bold,
                                                                 fontSize: 15),
                                                           ),
-                                                          SizedBox(width: 5),
+                                                          const SizedBox(width: 5),
                                                           Text(
                                                               storedocs[index]
                                                               ['number'],
-                                                              style: TextStyle(
+                                                              style: const TextStyle(
                                                                   color: Color(
                                                                       0xff454283),
                                                                   fontWeight:
@@ -542,10 +553,10 @@ class _RespactedloginState extends State<Student_Listing> {
                                                                   fontSize: 15)),
                                                         ],
                                                       ),
-                                                      SizedBox(height: 5),
+                                                      const SizedBox(height: 5),
                                                       Row(
                                                         children: [
-                                                          Text(
+                                                          const Text(
                                                             'Branch :',
                                                             style: TextStyle(
                                                                 color: Color(
@@ -555,11 +566,11 @@ class _RespactedloginState extends State<Student_Listing> {
                                                                     .bold,
                                                                 fontSize: 15),
                                                           ),
-                                                          SizedBox(width: 5),
+                                                          const SizedBox(width: 5),
                                                           Text(
                                                               displaylist[index]
                                                               ['branch'],
-                                                              style: TextStyle(
+                                                              style: const TextStyle(
                                                                   color: Color(
                                                                       0xff454283),
                                                                   fontWeight:
@@ -569,12 +580,12 @@ class _RespactedloginState extends State<Student_Listing> {
                                                               maxLines: 1),
                                                         ],
                                                       ),
-                                                      SizedBox(height: 5),
+                                                      const SizedBox(height: 5),
                                                       Row(
                                                         mainAxisSize:
                                                         MainAxisSize.min,
                                                         children: [
-                                                          Text(
+                                                          const Text(
                                                             'Sem :',
                                                             style: TextStyle(
                                                                 color: Color(
@@ -584,11 +595,10 @@ class _RespactedloginState extends State<Student_Listing> {
                                                                     .bold,
                                                                 fontSize: 16),
                                                           ),
-                                                          SizedBox(width: 5),
+                                                          const SizedBox(width: 5),
                                                           Text(
-                                                              displaylist[index]
-                                                              ['sem'],
-                                                              style: TextStyle(
+                                                              displaylist[index]['sem'],
+                                                              style: const TextStyle(
                                                                   color: Color(
                                                                       0xff454283),
                                                                   fontWeight:
@@ -596,8 +606,8 @@ class _RespactedloginState extends State<Student_Listing> {
                                                                       .bold,
                                                                   fontSize: 15),
                                                               maxLines: 1),
-                                                          SizedBox(width: 5),
-                                                          Text('Year:',
+                                                          const SizedBox(width: 5),
+                                                          const Text('Year:',
                                                               style: TextStyle(
                                                                   color: Color(
                                                                       0xff666565),
@@ -605,11 +615,11 @@ class _RespactedloginState extends State<Student_Listing> {
                                                                   FontWeight
                                                                       .bold,
                                                                   fontSize: 15)),
-                                                          SizedBox(width: 5),
+                                                          const SizedBox(width: 5),
                                                           Text(
                                                               displaylist[index]
                                                               ['year'],
-                                                              style: TextStyle(
+                                                              style: const TextStyle(
                                                                   color: Color(
                                                                       0xff454283),
                                                                   fontWeight:
@@ -619,12 +629,12 @@ class _RespactedloginState extends State<Student_Listing> {
                                                               maxLines: 1),
                                                         ],
                                                       ),
-                                                      SizedBox(height: 5),
+                                                      const SizedBox(height: 5),
                                                       Text(
                                                         displaylist[index]
                                                         ['clg/uni'
                                                             ''],
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           color:
                                                           Color(0xff454283),
                                                           fontWeight:
@@ -659,4 +669,33 @@ class _RespactedloginState extends State<Student_Listing> {
           );
         });
   }
+  _makingPhoneCall(displaylist) async {
+    var url = Uri.parse("tel:$displaylist");
+    // var url = Uri.parse("tel:7622953838");
+    if (await launchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+  _makingPhoneCallicon(displaylist) async {
+    var url = Uri.parse("tel:$displaylist");
+    // var url = Uri.parse("tel:7622953838");
+    if (await launchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+  Future<void> shareApp() async {
+     const String appLink = 'https://play.google.com/store/apps/details?id=com.example.myapp';
+    const String message = 'it is app link: $appLink';
+    (title: 'text', text: message, linkUrl: appLink);
+  }
+   // void _onShare(BuildContext context) async {
+   //   final box = context.findRenderObject() as RenderBox?;
+  //   await Share.share(text,subject: link,
+  //       sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
+  //
+  // }
 }

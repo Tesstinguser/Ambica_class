@@ -1,37 +1,92 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:untitled1/LoginFiles/student_listing.dart';
+import 'package:path/path.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class EditProfile extends StatefulWidget {
   final String id;
-  EditProfile({Key? key, required this.id}) : super(key: key);
+
+  const EditProfile({Key? key, required this.id}) : super(key: key);
 
   @override
   State<EditProfile> createState() => _AddState();
 }
 
 class _AddState extends State<EditProfile> {
-
   final _formKey = GlobalKey<FormState>();
+  File? editimageUrl;
+
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
+  final ImagePicker _picker = ImagePicker();
+
+  Future imgFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        editimageUrl = File(pickedFile.path);
+        uploadFile();
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future imgFromCamera() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+    setState(() {
+      if (pickedFile != null) {
+        editimageUrl = File(pickedFile.path);
+        uploadFile();
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future uploadFile() async {
+    if (editimageUrl == null) return;
+    final fileName = basename(editimageUrl!.path);
+    final destination = 'demoimage/$fileName';
+    try {
+      final ref = firebase_storage.FirebaseStorage.instance
+          .ref(destination)
+          .child('images/');
+      await ref.putFile(editimageUrl!);
+    } catch (e) {
+      print('error occured');
+      Fluttertoast.showToast(msg: e.toString());
+    }
+  }
 
   // Updaing Student
-  CollectionReference students = FirebaseFirestore.instance.collection('demo');
-  Future<void> updateUser(id, name , email, number , adrresline1 , adrresline2 , adrresline3 ,city , zipcode , state , country) {
-    return students
-        .doc(id).update({
-      'name': name,
-      'email': email,
-      'number' : number,
-      'addressline1': adrresline1,
-      'addressline2': adrresline2,
-      'addressline3': adrresline3,
-      'city': city,
-      'zipcode': zipcode,
-      'state': state,
-      'country': country,
-    })
+  CollectionReference students = FirebaseFirestore.instance
+      .collection('org')
+      .doc('orgdetails')
+      .collection('students');
+
+  Future<void> updateUser(id, name, email, number, adrresline1, adrresline2,
+      adrresline3, city, zipcode, state, country, imageurl) async {
+    students
+        .doc(id)
+        .update({
+          'name': name,
+          'email': email,
+          'number': number,
+          'addressline1': adrresline1,
+          'addressline2': adrresline2,
+          'addressline3': adrresline3,
+          'city': city,
+          'zipcode': zipcode,
+          'state': state,
+          'country': country,
+          'sgimage': imageurl,
+        })
         .then((value) => print("User Updated"))
         .catchError((error) => print("Failed to update user: $error"));
   }
@@ -39,23 +94,24 @@ class _AddState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff454283),
+      backgroundColor: const Color(0xff454283),
       body: Form(
         key: _formKey,
-        child:
-        FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
             future: FirebaseFirestore.instance
-                .collection('demo')
+                .collection('org')
+                .doc("orgdetails")
+                .collection("students")
                 .doc(widget.id)
                 .get(),
-            builder: (context , snapshot) {
+            builder: (context, snapshot) {
               if (snapshot.hasError) {
                 print('Something Went Wrong');
               }
               if (snapshot.connectionState == ConnectionState.waiting) {
-                // return Center(
-                //   child: CircularProgressIndicator(),
-                // );
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
               }
 
               var data = snapshot.data!.data();
@@ -69,7 +125,7 @@ class _AddState extends State<EditProfile> {
               var zipcode = data['zipcode'];
               var state = data['state'];
               var country = data['country'];
-
+              var imageurl = data['sgimage'];
 
               return SafeArea(
                   child: SingleChildScrollView(
@@ -79,18 +135,18 @@ class _AddState extends State<EditProfile> {
                       children: [
                         Container(
                           height: 70,
-                          color: Color(0xff454283),
+                          color: const Color(0xff454283),
                           child: Row(
                             children: [
                               IconButton(
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.arrow_back,
                                     color: Colors.white,
                                   )),
-                              Text("Profile Edit",
+                              const Text("Profile Edit",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 20)),
                             ],
@@ -104,31 +160,51 @@ class _AddState extends State<EditProfile> {
                               bottom: 20),
                           child: Container(
                             width: double.infinity,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(19)),
                                 color: Colors.white),
                             child: Column(
                               children: [
-                                SizedBox(
+                                const SizedBox(
                                   height: 17,
                                 ),
-                                Divider(
+                                const Divider(
                                   color: Colors.black,
                                 ),
-                                Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Image.asset(
-                                      'assets/Images/cameraimg.png',
-                                      width:
-                                          MediaQuery.of(context).size.height *
-                                              0.14,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.14,
-                                      fit: BoxFit.cover,
-                                    ),
+                                InkWell(
+                                  onTap: () {
+                                    _showPicker(context);
+                                  },
+                                  child: Center(
+                                    child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        // child: Image.network(imageurl,
+                                        // child: Image.asset('assets/Images/cameraimg.png',
+                                        child: imageurl != null &&
+                                                imageurl.isNotEmpty
+                                            ? Image.file(
+                                                File(editimageUrl != null
+                                                    ? editimageUrl!.path
+                                                    : imageurl),
+                                                // File(editimageUrl?.toString() ?? imageurl?.toString() ?? '',),
+                                                // imageurl,
+                                                //   imageurl,
+                                                // editimageUrl != null ? editimageUrl: imageurl,
+                                                // e  ditimageUrl ?? imageurl,
+                                                // imageurl,
+                                                // editimageUrl?.toString() ?? imageurl?.toString() ?? '',
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.14,
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.14,
+                                                fit: BoxFit.cover,
+                                              )
+                                            : const Text('no select images')),
                                   ),
                                 ),
                                 Padding(
@@ -140,19 +216,19 @@ class _AddState extends State<EditProfile> {
                                     autofocus: false,
                                     onChanged: (value) => name = value,
                                     validator: (value) {
-                                      if (value == null   || value.isEmpty) {
+                                      if (value == null || value.isEmpty) {
                                         return 'Please Enter Name';
                                       }
                                       return null;
                                     },
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
                                       hintText: 'Name',
                                       labelText: 'Name',
-
                                     ),
                                   ),
                                 ),
+
                                 // TextFormField(
                                 //   initialValue: email,
                                 //   autofocus: false,
@@ -173,6 +249,7 @@ class _AddState extends State<EditProfile> {
                                 //     return null;
                                 //   },
                                 // ),
+
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       left: 23, right: 23, top: 10),
@@ -180,7 +257,7 @@ class _AddState extends State<EditProfile> {
                                     initialValue: email,
                                     autofocus: false,
                                     onChanged: (value) => email = value,
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
                                       hintText: 'Email',
                                       labelText: 'Email',
@@ -203,12 +280,12 @@ class _AddState extends State<EditProfile> {
                                     autofocus: false,
                                     onChanged: (value) => number = value,
                                     validator: (value) {
-                                      if (value == null   || value.isEmpty) {
+                                      if (value == null || value.isEmpty) {
                                         return 'Please Enter Name';
                                       }
                                       return null;
                                     },
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
                                       hintText: 'Number',
                                       labelText: 'Number',
@@ -223,12 +300,12 @@ class _AddState extends State<EditProfile> {
                                     autofocus: false,
                                     onChanged: (value) => adrresline1 = value,
                                     validator: (value) {
-                                      if (value == null   || value.isEmpty) {
+                                      if (value == null || value.isEmpty) {
                                         return 'Please Enter Name';
                                       }
                                       return null;
                                     },
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
                                       hintText: 'AddresLine1',
                                       labelText: 'AddresLine1',
@@ -243,12 +320,12 @@ class _AddState extends State<EditProfile> {
                                     autofocus: false,
                                     onChanged: (value) => adrresline2 = value,
                                     validator: (value) {
-                                      if (value == null   || value.isEmpty) {
+                                      if (value == null || value.isEmpty) {
                                         return 'Please Enter Name';
                                       }
                                       return null;
                                     },
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
                                       hintText: 'AddresLine2',
                                       labelText: 'AddresLine2',
@@ -263,12 +340,12 @@ class _AddState extends State<EditProfile> {
                                     autofocus: false,
                                     onChanged: (value) => adrresline3 = value,
                                     validator: (value) {
-                                      if (value == null   || value.isEmpty) {
+                                      if (value == null || value.isEmpty) {
                                         return 'Please Enter Name';
                                       }
                                       return null;
                                     },
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
                                       hintText: 'AddresLine3',
                                       labelText: 'AddresLine3',
@@ -279,19 +356,20 @@ class _AddState extends State<EditProfile> {
                                   children: [
                                     Flexible(
                                       child: Padding(
-                                        padding: EdgeInsets.only(
+                                        padding: const EdgeInsets.only(
                                             left: 23, right: 0, top: 10),
                                         child: TextFormField(
                                           initialValue: city,
                                           autofocus: false,
                                           onChanged: (value) => city = value,
                                           validator: (value) {
-                                            if (value == null   || value.isEmpty) {
+                                            if (value == null ||
+                                                value.isEmpty) {
                                               return 'Please Enter Name';
                                             }
                                             return null;
                                           },
-                                          decoration: InputDecoration(
+                                          decoration: const InputDecoration(
                                             border: OutlineInputBorder(),
                                             hintText: 'Student’s City ',
                                             labelText: 'Student’s City ',
@@ -301,19 +379,20 @@ class _AddState extends State<EditProfile> {
                                     ),
                                     Flexible(
                                       child: Padding(
-                                        padding: EdgeInsets.only(
+                                        padding: const EdgeInsets.only(
                                             left: 10, right: 23, top: 10),
                                         child: TextFormField(
                                           initialValue: zipcode,
                                           autofocus: false,
                                           onChanged: (value) => zipcode = value,
                                           validator: (value) {
-                                            if (value == null   || value.isEmpty) {
+                                            if (value == null ||
+                                                value.isEmpty) {
                                               return 'Please Enter Name';
                                             }
                                             return null;
                                           },
-                                          decoration: InputDecoration(
+                                          decoration: const InputDecoration(
                                             border: OutlineInputBorder(),
                                             hintText: 'Zip code',
                                             labelText: 'Zip code',
@@ -327,19 +406,20 @@ class _AddState extends State<EditProfile> {
                                   children: [
                                     Flexible(
                                       child: Padding(
-                                        padding: EdgeInsets.only(
+                                        padding: const EdgeInsets.only(
                                             left: 23, right: 0, top: 10),
                                         child: TextFormField(
                                           initialValue: state,
                                           autofocus: false,
                                           onChanged: (value) => state = value,
                                           validator: (value) {
-                                            if (value == null   || value.isEmpty) {
+                                            if (value == null ||
+                                                value.isEmpty) {
                                               return 'Please Enter Name';
                                             }
                                             return null;
                                           },
-                                          decoration: InputDecoration(
+                                          decoration: const InputDecoration(
                                             border: OutlineInputBorder(),
                                             hintText: 'State ',
                                             labelText: 'State',
@@ -349,19 +429,20 @@ class _AddState extends State<EditProfile> {
                                     ),
                                     Flexible(
                                       child: Padding(
-                                        padding: EdgeInsets.only(
+                                        padding: const EdgeInsets.only(
                                             left: 10, right: 23, top: 10),
                                         child: TextFormField(
                                           initialValue: country,
                                           autofocus: false,
                                           onChanged: (value) => country = value,
                                           validator: (value) {
-                                            if (value == null   || value.isEmpty) {
+                                            if (value == null ||
+                                                value.isEmpty) {
                                               return 'Please Enter Name';
                                             }
                                             return null;
                                           },
-                                          decoration: InputDecoration(
+                                          decoration: const InputDecoration(
                                             border: OutlineInputBorder(),
                                             hintText: 'Country',
                                             labelText: 'Country',
@@ -371,17 +452,16 @@ class _AddState extends State<EditProfile> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 30,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 10, right: 10),
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 10, right: 10),
                                   child: Divider(
                                     color: Colors.black,
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 Row(
@@ -394,31 +474,34 @@ class _AddState extends State<EditProfile> {
                                           right: 10,
                                           top: 10,
                                           bottom: 10),
-                                        child: ElevatedButton(
+                                      child: ElevatedButton(
                                           onPressed: () {},
                                           style: ButtonStyle(
                                               backgroundColor:
-                                                  MaterialStatePropertyAll(
+                                                  const MaterialStatePropertyAll(
                                                       Colors.red),
                                               shape: MaterialStatePropertyAll(
                                                   RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               30)))),
-                                          child: Container(
+                                          child: SizedBox(
                                             height: 60,
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width *
                                                 0.30,
-                                            child: Row(
+                                            child: const Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                Icon(Icons.close),
-                                                Text('Cancel')
+                                                Icon(Icons.close,
+                                                    color: Colors.white),
+                                                Text('Cancel',
+                                                    style: TextStyle(
+                                                        color: Colors.white)),
                                               ],
                                             ),
                                           )),
@@ -430,14 +513,14 @@ class _AddState extends State<EditProfile> {
                                           onPressed: () {},
                                           style: ButtonStyle(
                                               backgroundColor:
-                                                  MaterialStatePropertyAll(
+                                                  const MaterialStatePropertyAll(
                                                       Color(0xff454283)),
                                               shape: MaterialStatePropertyAll(
                                                   RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               30)))),
-                                          child: Container(
+                                          child: SizedBox(
                                             height: 60,
                                             width: MediaQuery.of(context)
                                                     .size
@@ -445,22 +528,41 @@ class _AddState extends State<EditProfile> {
                                                 0.33,
                                             child: InkWell(
                                               onTap: () {
-                                                if (_formKey.currentState!.validate()) {
+                                                if (_formKey.currentState!
+                                                    .validate()) {
                                                   updateUser(
-                                                      widget.id, name , email, number , adrresline1 , adrresline2 , adrresline3 ,city , zipcode , state , country);
+                                                      widget.id,
+                                                      name,
+                                                      email,
+                                                      number,
+                                                      adrresline1,
+                                                      adrresline2,
+                                                      adrresline3,
+                                                      city,
+                                                      zipcode,
+                                                      state,
+                                                      country,
+                                                      imageurl);
                                                   Navigator.pop(context);
 
-                                                 // Navigator.push(context, MaterialPageRoute(builder: (context) => Student_Listing()));
-                                                                                                  }
+                                                  // Navigator.push(context, MaterialPageRoute(builder: (context) => Student_Listing()));
+                                                }
                                               },
-                                              child: Row(
+                                              child: const Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
                                                 children: [
-                                                  Icon(Icons.add),
-                                                  Text('Save')
+                                                  Icon(
+                                                    Icons.add,
+                                                    color: Colors.white,
+                                                  ),
+                                                  Text(
+                                                    'Save',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
                                                 ],
                                               ),
                                             ),
@@ -480,5 +582,36 @@ class _AddState extends State<EditProfile> {
             }),
       ),
     );
+  }
+
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Wrap(
+              children: <Widget>[
+                ListTile(
+                    leading: const Icon(Icons.photo_library),
+                    title: const Text('Gallery'),
+                    onTap: () {
+                      imgFromGallery();
+                      // _upload('gallery');
+                      Navigator.of(context).pop();
+                    }),
+                ListTile(
+                  leading: const Icon(Icons.photo_camera),
+                  title: const Text('Camera'),
+                  onTap: () {
+                    // _upload('camera');
+                    imgFromCamera();
+                    // imgFromCamera();se
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        });
   }
 }

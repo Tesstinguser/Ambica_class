@@ -2,15 +2,12 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled1/LoginFiles/otp_verification.dart';
 import 'package:untitled1/LoginFiles/student_listing.dart';
-import '../Unusalbefile/OtpScreen.dart';
-import '../Unusalbefile/home_page.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -30,9 +27,9 @@ class _imagetestingState extends State<LoginScreen> {
 
   void _signInWithPhone(BuildContext context) async {
     if (phoneNumber != null && phoneNumber!.isNotEmpty) {
-      final FirebaseAuth _auth = FirebaseAuth.instance;
+      final FirebaseAuth auth = FirebaseAuth.instance;
       try {
-        await _auth.verifyPhoneNumber(
+        await auth.verifyPhoneNumber(
           phoneNumber: phoneNumber!,
           verificationCompleted: (PhoneAuthCredential credential) {
             // Automatic verification completed (only on physical devices).
@@ -54,7 +51,7 @@ class _imagetestingState extends State<LoginScreen> {
                 builder: (context) => OTPverification(verificationId),
               ),
             );
-            print("USERIDD=>${verifId}");
+            print("USERIDD=>$verifId");
           },
           codeAutoRetrievalTimeout: (String verificationId) {
             // Auto retrieval timeout.
@@ -67,17 +64,13 @@ class _imagetestingState extends State<LoginScreen> {
   }
   // Assuming you have a reference to the document
   Future<void> checkIfExists() async {
-
     // DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance.collection('org').doc().get();
-
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('org').where('orgcode', isEqualTo: orgController.text.toString()).get();
     if (querySnapshot.docs.isNotEmpty) {
       print("DATAPRINT=>${querySnapshot.docs[0].id}");
       // Fluttertoast.showToast(msg: 'we send otp as soon');
 
       QuerySnapshot querySnapshotin = await  FirebaseFirestore.instance.collection('org/${querySnapshot.docs[0].id}/users').where('mo_no', isEqualTo: userController.text.toString()).get();
-
-
       if(querySnapshotin.docs.isNotEmpty)
         {
           print("DATAPRINTOK=>${querySnapshotin.docs[0].id}");
@@ -85,18 +78,16 @@ class _imagetestingState extends State<LoginScreen> {
           Navigator.push(context, MaterialPageRoute(builder: (context) => OTPverification(userController.text),));
         }
       else{
-        Fluttertoast.showToast(msg: 'Number is not valid');
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => OTPverification(userController.text),));
+        // Fluttertoast.showToast(msg: 'Number is not valid');
       }
-
-    } else {
+    } else
+    {
       setState(() {
         _exists = false;
       });
       Fluttertoast.showToast(msg: 'org code is invalid');
     }
-
-
-
   }
   //  Future<void> checkIfExists() async {
   //
@@ -160,15 +151,15 @@ class _imagetestingState extends State<LoginScreen> {
 
   Future checkFirstSeen() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool _seen = (prefs.getBool('seen') ?? false);
+    bool seen = (prefs.getBool('seen') ?? false);
 
-    if (_seen) {
-      Navigator.of(context as BuildContext).pushReplacement(
-          new MaterialPageRoute(builder: (context) => new LoginScreen()));
+    if (seen) {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const LoginScreen()));
     } else {
       await prefs.setBool('seen', true);
-      Navigator.of(context as BuildContext).pushReplacement(
-          new MaterialPageRoute(builder: (context) => new Student_Listing()));
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const Student_Listing()));
     }
   }
 
@@ -180,48 +171,47 @@ class _imagetestingState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login'),
         centerTitle: true,
-          backgroundColor: Color(0xff454283),
+          backgroundColor: const Color(0xff454283),
         // leading: Icon(Icons.arrow_back,size: 30),
         ),
       body:  SingleChildScrollView(
         child: Column(
             children: [
-              SizedBox(height: 20,),
+              const SizedBox(height: 20,),
                Image.asset('assets/Images/Applogo.jpg',
                     height: MediaQuery.of(context).size.height*0.19,
                     width: MediaQuery.of(context).size.width*11
                ),
               Container(
-                margin: EdgeInsets.only(left: 25 ),
-                  child: Text('Welcome to Ambica Classes',style: TextStyle(fontSize: 30,color: Color(0xff182035),fontWeight: FontWeight.bold))),
+                margin: const EdgeInsets.only(left: 25 ),
+                  child: const Text('Welcome to Ambica Classes',style: TextStyle(fontSize: 30,color: Color(0xff182035),fontWeight: FontWeight.bold))),
               Row(
                 children: [
-                  Container(margin: EdgeInsets.only(left:  25,top: 15),child: Text('we have send you an ',style: TextStyle(fontSize: 14.5),)),
-                  Container(margin: EdgeInsets.only(top: 10),child: Text('One Time Password(OTP)',style: TextStyle(color: Color(0xff182035),fontWeight: FontWeight.bold))),
-
+                  Container(margin: const EdgeInsets.only(left:  25,top: 15),child: const Text('we have send you an ',style: TextStyle(fontSize: 14.5),)),
+                  Container(margin: const EdgeInsets.only(top: 10),child: const Text('One Time Password(OTP)',style: TextStyle(color: Color(0xff182035),fontWeight: FontWeight.bold))),
                   ],
               ),
-                    Container(margin: EdgeInsets.only(left: 25,),alignment: Alignment.topLeft,child: Text('on this number')),
-                    Container(margin: EdgeInsets.only(left: 25,top: 20),alignment: Alignment.topLeft,child: Text('Enter Mobile no.*',)),
-              //       Container(
-              //         decoration: BoxDecoration(
-              //           borderRadius: BorderRadius.all(Radius.circular(10)),border: Border.all(color: Colors.black)
-              //         ),
-              //         margin: EdgeInsets.only(left: MediaQuery.of(context).size.height*0.05,right: 20),
-              //         child: IntlPhoneField(
-              //   controller: userController,
-              //   decoration: InputDecoration(
-              //     labelText: 'Phone Number',
-              //     border: InputBorder.none,
-              //   ),
-              //   initialCountryCode: 'IN',
-              //   onChanged: (phone) {
-              //     phoneNumber = phone.completeNumber;
-              //   },
-              // ),
-              //       ),
+                    Container(margin: const EdgeInsets.only(left: 25,),alignment: Alignment.topLeft,child: const Text('on this number')),
+                      // Container(margin: EdgeInsets.only(left: 25,top: 20),alignment: Alignment.topLeft,child: Text('Enter Mobile no.*',)),
+                //       Container(
+                //         decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.all(Radius.circular(10)),border: Border.all(color: Colors.black)
+                //         ),
+                //         margin: EdgeInsets.only(left: MediaQuery.of(context).size.height*0.05,right: 20),
+                //         child: IntlPhoneField(
+                //   controller: userController,
+                //   decoration: InputDecoration(
+                //     labelText: 'Phone Number',
+                //     border: InputBorder.none,
+                //   ),
+                //   initialCountryCode: 'IN',
+                //   onChanged: (phone) {
+                //     phoneNumber = phone.completeNumber;
+                //   },
+                // ),
+                //       ),
               // Row(
               //  children: [
               //     Container(
@@ -249,16 +239,16 @@ class _imagetestingState extends State<LoginScreen> {
               //   ],
               // ),
               Container(
-               margin: EdgeInsets.only(left: 19,right: 19,top: 10),
+               margin: const EdgeInsets.only(left: 19,right: 19,top: 10),
                 child: TextFormField(
                   autofocus: false,
                   decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
 
                     labelText: 'Orgcode ',alignLabelWithHint: true,
-                    labelStyle: TextStyle(fontSize: 20.0),
+                    labelStyle: const TextStyle(fontSize: 20.0),
 
                     errorStyle:
-                    TextStyle(color: Colors.redAccent, fontSize: 15),
+                    const TextStyle(color: Colors.redAccent, fontSize: 15),
                   ),
                   controller: orgController,
                   validator: (value) {
@@ -270,7 +260,7 @@ class _imagetestingState extends State<LoginScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 19,right: 19,top: 10),
+                padding: const EdgeInsets.only(left: 19,right: 19,top: 10),
                 child: IntlPhoneField(
                   controller: userController,
                   decoration: InputDecoration(
@@ -284,29 +274,32 @@ class _imagetestingState extends State<LoginScreen> {
                   },
                 ),
               ),
-
               Container(
                 height: MediaQuery.of(context).size.height*0.06,
                 width: double.infinity,
-                margin: EdgeInsets.only(left: 25,right: 20,top: 20),
+                margin: const EdgeInsets.only(left: 25,right: 20,top: 20),
                 child: ElevatedButton(
-                    style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color(0xff555288))),
+                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color(0xff555288))),
                     onPressed: () {
-                        if(userController.text.isEmpty){
+                        if(userController.text.isEmpty && orgController.text.isEmpty){
                           Fluttertoast.showToast(msg: "Please enter mobile number");
                           }
+                        else if(userController.text.isNotEmpty && orgController.text.isNotEmpty){
+                          _signInWithPhone(context);
+                          checkIfExists();
+
+                        }
                         else{
                         // Fluttertoast.showToast(msg: 'ok');
-                          // Navigator.push(context, MaterialPageRoute(builder: (context) => OTPverification(userController.text),));
-                          // _signInWithPhone(context);
-                          // isSent
-                          //     ? verifyUser()
-                          //     : registerUser(userController.text, context);
-
-                          checkIfExists();
+                        //   Navigator.push(context, MaterialPageRoute(builder: (context) => OTPverification(userController.text),));
+                        //   _signInWithPhone(context);
+                        //   // isSent
+                        //   //     ? verifyUser()
+                        //   //     : registerUser(userController.text, context);
+                        //   checkIfExists();
                           }
                              },
-                     child: Text("Get Code",style: TextStyle(color: Colors.white)
+                     child: const Text("Get Code",style: TextStyle(color: Colors.white)
                        ,)),
               )
             ],

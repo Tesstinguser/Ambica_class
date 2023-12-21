@@ -1,4 +1,3 @@
-// main.dart
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -10,18 +9,18 @@ import 'package:image_picker/image_picker.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize a new Firebase App instance
+// Initialize a new Firebase App instance
   await Firebase.initializeApp();
-  runApp(const demo());
+  runApp(const cbcrud());
 }
 
-class demo extends StatelessWidget {
-  const demo({Key? key}) : super(key: key);
+class cbcrud extends StatelessWidget {
+  const cbcrud({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // Remove the debug banner
+// Remove the debug banner
       debugShowCheckedModeBanner: false,
       title: 'dbestech',
       theme: ThemeData(primarySwatch: Colors.green),
@@ -40,8 +39,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   FirebaseStorage storage = FirebaseStorage.instance;
 
-  // Select and image from the gallery or take a picture with the camera
-  // Then upload to Firebase Storage
+// Select and image from the gallery or take a picture with the camera
+// Then upload to Firebase Storage
   Future<void> _upload(String inputSource) async {
     final picker = ImagePicker();
     XFile? pickedImage;
@@ -51,17 +50,17 @@ class _HomePageState extends State<HomePage> {
               ? ImageSource.camera
               : ImageSource.gallery,
           maxWidth: 1920);
+
       final String fileName = path.basename(pickedImage!.path);
       File imageFile = File(pickedImage.path);
+
       try {
-        // Uploading the selected image with some custom meta data
+// Uploading the selected image with some custom meta data
         await storage.ref(fileName).putFile(
             imageFile,
-            SettableMetadata(customMetadata: {
-              'uploaded_by': 'learners',
-              'description': 'learning the hacks'
-            }));
-        // Refresh the UI
+           );
+
+// Refresh the UI
         setState(() {});
       } on FirebaseException catch (error) {
         if (kDebugMode) {
@@ -74,9 +73,8 @@ class _HomePageState extends State<HomePage> {
       }
     }
   }
-
-  // Retriew the uploaded images
-  // This function is called when the app launches for the first time or when an image is uploaded or deleted
+// Retriew the uploaded images
+// This function is called when the app launches for the first time or when an image is uploaded or deleted
   Future<List<Map<String, dynamic>>> _loadImages() async {
     List<Map<String, dynamic>> files = [];
 
@@ -91,37 +89,27 @@ class _HomePageState extends State<HomePage> {
         "path": file.fullPath,
         "uploaded_by": fileMeta.customMetadata?['uploaded_by'] ?? 'Nobody',
         "description":
-        fileMeta.customMetadata?['description'] ?? 'No description'
+            fileMeta.customMetadata?['description'] ?? 'No description'
       });
     });
 
     return files;
   }
 
-  // Delete the selected image
-  // This function is called when a trash icon is pressed
+// Delete the selected image
+// This function is called when a trash icon is pressed
   Future<void> _delete(String ref) async {
     await storage.ref(ref).delete();
+// Rebuild the UI
     setState(() {});
   }
-
-  List<Map<String, dynamic>>? images;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadImages().then((data) {
-      setState(() {
-        images = data;
-      });
-    });
-  }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('dbestech')),
+      appBar: AppBar(
+        title: const Text('dbestech'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -140,37 +128,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             Expanded(
-                child:
-                // Scaffold(
-                //   body: images == null
-                //       ? Center(
-                //     child: CircularProgressIndicator(),
-                //   )
-                //       :
-                //     ListView.builder(
-                //       itemCount: images!.length,
-                //       itemBuilder: (context, index) {
-                //         final Map<String, dynamic> image = images![index];
-                //
-                //         return Card(
-                //           margin: const EdgeInsets.symmetric(vertical: 10),
-                //           child: ListTile(
-                //             dense: false,
-                //             leading: Image.network(image['url']),
-                //             trailing: IconButton(
-                //               onPressed: () => _delete(image['path']),
-                //               icon: const Icon(
-                //                 Icons.delete,
-                //                 color: Colors.red,
-                //               ),
-                //             ),
-                //           ),
-                //         );
-                //       },
-                //     ),
-                // ),
-
-              FutureBuilder(
+              child: FutureBuilder(
                 future: _loadImages(),
                 builder: (context,
                     AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
@@ -178,28 +136,24 @@ class _HomePageState extends State<HomePage> {
                     return ListView.builder(
                       itemCount: snapshot.data?.length ?? 0,
                       itemBuilder: (context, index) {
-                        final Map<String, dynamic> image = snapshot.data![index];
+                        final Map<String, dynamic> image =
+                            snapshot.data![index];
+
                         return Card(
                           margin: const EdgeInsets.symmetric(vertical: 10),
-                          child: Image.network(image['url']),
-                          // child: ListTile(
-                          //   dense: false,
-                          //   leading: Image.network(image['url']),
-                          //   title: InkWell(
-                          //       onTap: () {
-                          //
-                          //       },
-                          //       child: Icon(Icons.edit)),
-                          //   // title: Text(image['uploaded_by']),
-                          //   // subtitle: Text(image['description']),
-                          //   trailing: IconButton(
-                          //     onPressed: () => _delete(image['path']),
-                          //     icon: const Icon(
-                          //       Icons.delete,
-                          //       color: Colors.red,
-                          //     ),
-                          //   ),
-                          // ),
+                          child: ListTile(
+                            dense: false,
+                            leading: Image.network(image['url']),
+                            // title: Text(image['uploaded_by']),
+                            // subtitle: Text(image['description']),
+                            trailing: IconButton(
+                              onPressed: () => _delete(image['path']),
+                              icon: const Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
                         );
                       },
                     );

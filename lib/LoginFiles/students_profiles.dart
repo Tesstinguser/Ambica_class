@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'Edit_Profile.dart';
 
 class StudentsProfiles extends StatefulWidget {
   const StudentsProfiles({super.key});
@@ -14,7 +13,7 @@ class _StudentDetilasState extends State<StudentsProfiles> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff454283),
+      backgroundColor: const Color(0xff454283),
       body: SafeArea(
           child: Column(
         children: [
@@ -22,23 +21,23 @@ class _StudentDetilasState extends State<StudentsProfiles> {
             children: [
               Container(
                 height: 70,
-                color: Color(0xff454283),
+                color: const Color(0xff454283),
                 child: Row(
                   children: [
                     IconButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.arrow_back,
                           color: Colors.white,
                         )),
-                    Text("Profile",
+                    const Text("Profile",
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 22)),
-                    SizedBox(
+                    const SizedBox(
                       height: 40,
                       width: 40,
                     ),
@@ -57,7 +56,7 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                               //       builder: (context) => EditProfile(),
                               //     ));
                             },
-                            child: Icon(Icons.edit,
+                            child: const Icon(Icons.edit,
                                 color: Colors.white, size: 35)),
                       ],
                     ),
@@ -72,19 +71,19 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                     bottom: 10),
                 child: Container(
                   width: double.infinity,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                       color: Colors.white),
                   child: Row(
                     children: [
                       Expanded(
                         child: Container(
-                          margin: EdgeInsets.only(top: 7),
+                          margin: const EdgeInsets.only(top: 7),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Divider(
+                              const Divider(
                                 color: Colors.black,
                               ),
                               Stack(
@@ -92,11 +91,11 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      SizedBox(height: 5),
+                                      const SizedBox(height: 5),
                                       Center(
                                         child: Container(
                                           margin:
-                                              EdgeInsets.only(top: 0, left: 25),
+                                              const EdgeInsets.only(top: 0, left: 25),
                                           child: ClipOval(
                                             child: Image.asset(
                                               'assets/Images/userimg.png',
@@ -107,12 +106,12 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(height: 10),
+                                      const SizedBox(height: 10),
                                       Container(
-                                          margin: EdgeInsets.only(
+                                          margin: const EdgeInsets.only(
                                               left: 30, right: 10),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
+                                          child: const Padding(
+                                            padding: EdgeInsets.all(8.0),
                                             child: Text(
                                               "Ralph Edwards",
                                               style: TextStyle(
@@ -121,12 +120,12 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                                                   fontWeight: FontWeight.bold),
                                             ),
                                           )),
-                                      SizedBox(height: 5),
+                                      const SizedBox(height: 5),
                                     ],
                                   ),
                                 ],
                               ),
-                              Row(
+                              const Row(
                                 children: [
                                   SizedBox(width: 19),
                                   Icon(
@@ -141,7 +140,7 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                                           fontSize: 15)),
                                 ],
                               ),
-                              Row(
+                              const Row(
                                 children: [
                                   SizedBox(width: 19),
                                   Icon(Icons.email),
@@ -153,17 +152,17 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                                           fontSize: 15)),
                                 ],
                               ),
-                              SizedBox(width: 17),
-                              Padding(
+                              const SizedBox(width: 17),
+                              const Padding(
                                 padding:
-                                    const EdgeInsets.only(left: 23, right: 23),
+                                    EdgeInsets.only(left: 23, right: 23),
                                 child: Divider(
                                   color: Colors.black,
                                 ),
                               ),
-                              SizedBox(width: 17),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 23),
+                              const SizedBox(width: 17),
+                              const Padding(
+                                padding: EdgeInsets.only(left: 23),
                                 child: Text(
                                   "Address:",
                                   style: TextStyle(
@@ -174,9 +173,9 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                                   maxLines: 1,
                                 ),
                               ),
-                              SizedBox(width: 17),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 50),
+                              const SizedBox(width: 17),
+                              const Padding(
+                                padding: EdgeInsets.only(left: 50),
                                 child: Text(
                                   "Street line 1, ",
                                   style: TextStyle(
@@ -186,8 +185,8 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                                   ),
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 50),
+                              const Padding(
+                                padding: EdgeInsets.only(left: 50),
                                 child: Text(
                                   "Street line 2",
                                   style: TextStyle(
@@ -197,8 +196,8 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                                   ),
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 50),
+                              const Padding(
+                                padding: EdgeInsets.only(left: 50),
                                 child: Text(
                                   "Street line 3,:",
                                   style: TextStyle(
@@ -208,13 +207,13 @@ class _StudentDetilasState extends State<StudentsProfiles> {
                                   ),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 370,
                               ),
-                              Divider(
+                              const Divider(
                                 color: Colors.black,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5,
                               ),
                             ],

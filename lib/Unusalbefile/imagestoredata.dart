@@ -4,13 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class StudentDetailsPage extends StatelessWidget {
   final String studentId;
 
-  StudentDetailsPage({required this.studentId});
+  const StudentDetailsPage({super.key, required this.studentId});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Student Details'),
+        title: const Text('Student Details'),
       ),
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
@@ -19,14 +19,14 @@ class StudentDetailsPage extends StatelessWidget {
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData || snapshot.data == null) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
           final studentData = snapshot.data!.data() as Map<String, dynamic>?;
           if (studentData == null) {
-            return Center(
+            return const Center(
               child: Text('Student data not found.'),
             );
           }
@@ -35,17 +35,17 @@ class StudentDetailsPage extends StatelessWidget {
 
           return Column(
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(
                 'Student Name: ${studentData['name']}',
-                style: TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 20),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(
                 'Age: ${studentData['age']}',
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               imageUrl != null
                   ? Image.network(
                 imageUrl,
